@@ -1,0 +1,43 @@
+STORAGE COMPLETE FOR     23 DATA POINTS
+
+         SUMMARY OF VARIABLES STORED THIS STEP AND EXTREME VALUES
+ VARI TYPE    IDENTIFIERS   NAME     MINIMUM    AT TIME    MAXIMUM   AT TIME
+
+   2 RFOR  3707 FX        FX         66.82     0.2000E-01  1355.     0.4180
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE Release 17.2     17.2     ***
+ ANSYS Mechanical Enterprise
+ 00654237  VERSION=WINDOWS x64   05:04:31  OCT 16, 2021 CP=   1163.344
+
+ TEST
+
+
+
+          ***** ANSYS POST26 VARIABLE LISTING *****
+
+
+    TIME       3707 FX
+                  FX
+  0.20000E-01     66.8238
+  0.40000E-01     133.647
+  0.60000E-01     200.466
+  0.80000E-01     267.238
+  0.10000         333.926
+  0.12000         400.538
+  0.14000         467.077
+  0.16000         533.514
+  0.18000         599.828
+  0.20000         665.990
+  0.22000         731.977
+  0.24000         797.757
+  0.26000         863.318
+  0.28000         928.628
+  0.30000         993.631
+  0.32000         1058.26
+  0.34000         1122.31
+  0.36000         1185.49
+  0.38000         1247.32
+  0.40000         1306.33
+  0.40900         1332.05
+  0.41800         1355.43
+   2.0000         1349.44

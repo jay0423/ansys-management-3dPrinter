@@ -1,0 +1,17 @@
+拡張機能リスト
+
+Path Intellisense
+Bracket Pair Colorizer 2
+Ansys APDL
+C/C++
+Excel Viewer
+indent-reinbow
+IPython for VDCode
+Japanese Language
+Jupyter Notebook
+Material Icon Theme
+Materual Theme
+Python
+VS Code counter
+vscode-pdf
+zenkaku

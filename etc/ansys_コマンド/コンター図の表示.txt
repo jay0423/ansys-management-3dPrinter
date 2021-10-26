@@ -1,0 +1,16 @@
+
+!-XYせん断応力コンター表示-----------------------------------------------------
+/POST1  
+SET,LAST
+
+WPLANE, 1, 0, 0, Z1/2, X1, 0, Z1/2, 0, Y3, Z1/2
+/CPLANE, 1
+/TYPE,1,7
+
+
+
+/COLOR,CM, 0,CFRP1 
+/COLOR,CM, 0,CFRP2
+/COLOR,CM, 0,CFRP_K
+/COLOR,CM, 4,SOTO
+/COLOR,CM, 6,UCHI

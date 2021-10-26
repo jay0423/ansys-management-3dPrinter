@@ -1,0 +1,23 @@
+{
+    "ABBREVIATION": {
+        "cfrp0": "c0",
+        "cfrp1": "c1",
+        "cfrp2_lap": "c2_l",
+        "thickness": "th",
+        "gap": "g",
+        "div": "d",
+        "kasa": "kasa",
+        "time_distance": "t",
+        "correction": "cor",
+        "length": "len",
+        "solid185": "s185",
+        "solid186": "s186",
+        "cfrp_tensile": "cfr",
+        "epo_tensile": "epo",
+        "super": "sup",
+        "cfrp": "cfrp",
+        "epoxy": "epoxy",
+        "pla": "pla",
+        "test": "te"
+    }
+}

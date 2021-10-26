@@ -1,0 +1,3 @@
+/PREP7
+/format,,,,4
+ewrite,coordinate,txt

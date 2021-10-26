@@ -1,0 +1,1223 @@
+!/input,c:\ansys\test-follow-pin,txt
+finish
+/clear,start
+/NOPR
+
+!-タイトル--------------------------------------------------
+/TITLE,TEST
+
+!-総合プリプロセッサ----------------------------------------
+/PREP7
+
+
+!-基本定義--------------------------------------------------
+ANTYPE,STATIC          ! 静解析
+
+ET,1,SOLID185       ! 試験片ALとCFRPにSOLID185を使用
+ET,2,INTER205       ! 接着部にINTER205を使用
+
+/NOPR                !構造解析
+KEYW,PR_SET,1   
+KEYW,PR_STRUC,1 
+KEYW,PR_THERM,0 
+KEYW,PR_FLUID,0 
+KEYW,PR_ELMAG,0 
+KEYW,MAGNOD,0   
+KEYW,MAGEDG,0   
+KEYW,MAGHFE,0   
+KEYW,MAGELC,0   
+KEYW,PR_MULTI,0 
+KEYW,PR_CFD,0   
+/GO 
+
+
+!-パラメータ定義--------------------------------------------
+L_AL	=	100E-3
+L_CF	=	100E-3
+W_AL	=	25E-3
+W_CF	=	15E-3
+H_AL    =       3E-3
+H_CF    =       2.0E-3
+L_J =       35E-3
+H_J =       0
+L_L = 35E-3
+
+L_G	=	37.5E-3
+H	=	0.2E-3
+A	=	0.2E-3
+D       =       0.2E-3
+THICK   =       25E-3
+
+PIN_A   =	5
+PIN_AA   =	PIN_A+1
+
+PIN_B   =	10
+PIN_BB   =	PIN_B+1
+
+PIN_D   =	4E-3
+PIN_DBALL   =	0.9E-3
+PIN_H   =	2.8E-3
+PIN_DBASE   =	1.3E-3
+
+PIN_SPACE_A   =	W_CF/PIN_AA
+PIN_SPACE_B   =	L_J/PIN_BB
+
+CFRP_D = 0.4E-3  !CFRPフィラメントの直径
+
+
+CFRP_NUM = 14  !CFRPフィラメント巻き数
+
+DIV1=0.4E-3  !分割数1
+DIV2=0.4E-3 !分割数2
+DIV3=0.4E-3
+DIV4=0.075E-3
+DIV5=0.075E-3
+
+DISTANCE=-3E-3
+TIME1 = 3
+
+!-材料物性定義----------------------------------------------
+!>>>>>材料1>>>>>>>
+Aee1 = 60.9E9!1方向弾性率
+Aee2 = 3.97E9  !2方向弾性率
+Aee3 = 3.97E9  !3方向弾性率
+Anu12 = 0.42 !zx,zy方向ポアソン比
+
+Anu21 = 0.066 !xz,yz方向ポアソン比
+
+!Anu21 = 0.16 !xy,yx方向ポアソン比
+
+Ag23 = 2.27E9 !2-3方向せん断弾性率
+Ag12 = 2.13E9 !2-3方向せん断弾性率
+
+AsuA = -100E9 !引張強度(繊維平行方向)
+AsuZ = 701E6 !引張強度(繊維平行方向)
+AsuX = 19E6 !引張強度(繊維垂直方向)
+AsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
+SendanXYZ = 90.4E6 !せん断許容応力
+
+MITUDO1=  1260  !質量密度
+
+
+
+MP,EX,1,Aee2        ! 材料1:CFRTP
+MP,EY,1,Aee3  
+MP,EZ,1,Aee1 
+ 
+!MP,PRXY,1,Anu21
+!MP,PRYZ,1,Anu21
+!MP,PRXZ,1,Anu21
+
+MP,NUXY,1,Anu21
+MP,NUYZ,1,Anu12
+MP,NUXZ,1,Anu12
+
+
+MP,GXY,1,Ag12
+MP,GYZ,1,Ag23
+MP,GXZ,1,Ag23
+
+MP,DENS,1,MITUDO1
+
+
+
+
+
+!>>>>>材料2>>>>>>>
+Bee1 = 72.6E9!全方向弾性率
+
+Bnu12 = 0.33 !全方向ポアソン比
+
+Bg12 = 26E9   !全方向せん断弾性率
+
+MITUDO2= 2790   !質量密度
+
+     
+MP,EX,2,Bee1        ! 材料2:AL
+MP,EY,2,Bee1  
+MP,EZ,2,Bee1  
+MP,PRXY,2,Bnu12
+MP,PRYZ,2,Bnu12
+MP,PRXZ,2,Bnu12
+MP,GXY,2,Bg12
+MP,GYZ,2,Bg12
+MP,GXZ,2,Bg12
+
+MP,DENS,2,MITUDO2
+
+!>>>>>材料3>>>>>>>
+!Cee1 = 70E9!全方向弾性率
+
+!Cnu12 = 0.33 !全方向ポアソン比
+
+!Cg12 = 26E9   !全方向せん断弾性率
+
+
+
+     
+!MP,EX,3,Cee1        ! 材料3:粘着層
+!MP,EY,3,Cee1  
+!MP,EZ,3,Cee1  
+!MP,PRXY,3,Cnu12
+!MP,PRYZ,3,Cnu12
+!MP,PRXZ,3,Cnu12
+!MP,GXY,3,Cg12
+!MP,GYZ,3,Cg12
+!MP,GXZ,3,Cg12
+
+
+
+!-損傷モデル定義------------------------------------------
+
+tb,dmgi,1,,4,1			! 損傷発生の基準則を指定
+tbdata,1,2,2,2,2			! 最大応力則の指定
+
+tb,fcli,1,1,20,1			! 損傷発生の閾値を指定
+tbdata,1,AsuX,AsuA,AsuY,AsuA,AsuZ,AsuA! 応力指定
+tbdata,7,SendanXYZ,SendanXYZ,SendanXYZ
+
+
+tb,dmge,1,1,4,1			! 損傷発生時の剛性減少率を指定
+tbdata,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
+
+
+
+
+
+
+
+
+
+
+
+!-キーポイント定義------------------------------------------
+K	,	1	,	W_AL/2	,	0	,	0
+K	,	2	,	W_AL/2	,	0	,	L_AL
+K	,	3	,	0	,	0	,	L_AL
+K	,	4	,	0	,	0	,	0
+K	,	5	,	W_AL/2	,	H_AL	,	0
+K	,	6	,	W_AL/2	,	H_AL	,	L_AL
+K	,	7	,	0	,	H_AL	,	L_AL
+K	,	8	,	0	,	H_AL	,	0
+K	,	9	,	W_CF/2	,	H_AL	,	0
+K	,	10	,	W_CF/2	,	H_AL	,	L_J
+K	,	11	,	0	,	H_AL	,	L_J
+K	,	12	,	W_CF/2	,	H_AL+H_J/2	,	0
+K	,	13	,	W_CF/2	,	H_AL+H_J/2	,	L_J
+K	,	14	,	0	,	H_AL+H_J/2	,	L_J
+K	,	15	,	0	,	H_AL+H_J/2	,	0
+K	,	16	,	W_CF/2	,	H_AL+H_J	,	-L_CF+L_J
+K	,	17	,	W_CF/2	,	H_AL+H_J	,	0
+K	,	18	,	W_CF/2	,	H_AL+H_J	,	L_J
+K	,	19	,	0	,	H_AL+H_J	,	L_J
+K	,	20	,	0	,	H_AL+H_J	,	0
+K	,	21	,	0	,	H_AL+H_J	,	-L_CF+L_J
+K	,	22	,	W_CF/2	,	H_AL+H_J+H_CF	,	-L_CF+L_J
+K	,	23	,	W_CF/2	,	H_AL+H_J+H_CF	,	L_J
+K	,	24	,	0	,	H_AL+H_J+H_CF	,	L_J
+K	,	25	,	0	,	H_AL+H_J+H_CF	,	-L_CF+L_J
+K	,	26	,	W_AL/2	,	H_AL-A	,	0
+K	,	27	,	W_AL/2	,	H_AL-A	,	L_AL
+K	,	28	,	0	,	H_AL-A	,	L_AL
+K	,	29	,	0	,	H_AL-A	,	0
+K	,	30	,	W_CF/2	,	H_AL+H_J+H_CF/3	,	-L_CF+L_J
+K	,	31	,	W_CF/2	,	H_AL+H_J+H_CF/3	,	L_J
+K	,	32	,	0	,	H_AL+H_J+H_CF/3	,	L_J
+K	,	33	,	0	,	H_AL+H_J+H_CF/3	,	-L_CF+L_J
+K	,	34	,	W_AL/2	,	0	,	L_J+H
+K	,	35	,	W_AL/2	,	H_AL-A	,	L_J+H
+K	,	36	,	W_AL/2	,	H_AL	,	L_J+H
+K	,	37	,	0	,	H_AL	,	L_J+H
+K	,	38	,	0	,	H_AL-A	,	L_J+H
+K	,	39	,	0	,	0	,	L_J+H
+K	,	40	,	W_AL/2	,	0	,	L_J
+K	,	41	,	W_AL/2	,	H_AL-A	,	L_J
+K	,	42	,	W_AL/2	,	H_AL	,	L_J
+K	,	43	,	0	,	H_AL-A	,	L_J
+K	,	44	,	0	,	0	,	L_J
+K	,	45	,	W_AL/2	,	0	,	L_J-H
+K	,	46	,	W_AL/2	,	H_AL-A	,	L_J-H
+K	,	47	,	W_AL/2	,	H_AL	,	L_J-H
+K	,	48	,	W_CF/2	,	H_AL	,	L_J-H
+K	,	49	,	W_CF/2	,	H_AL+H_J/2	,	L_J-H
+K	,	50	,	W_CF/2	,	H_AL+H_J	,	L_J-H
+K	,	51	,	W_CF/2	,	H_AL+H_J+A	,	L_J-H
+K	,	52	,	W_CF/2	,	H_AL+H_J+H_CF	,	L_J-H
+K	,	53	,	0	,	H_AL+H_J+H_CF	,	L_J-H
+K	,	54	,	0	,	H_AL+H_J+A	,	L_J-H
+K	,	55	,	0	,	H_AL+H_J	,	L_J-H
+K	,	56	,	0	,	H_AL+H_J/2	,	L_J-H
+K	,	57	,	0	,	H_AL	,	L_J-H
+K	,	58	,	0	,	H_AL-A	,	L_J-H
+K	,	59	,	0	,	0	,	L_J-H
+K	,	60	,	W_AL/2	,	0	,	H
+K	,	61	,	W_AL/2	,	H_AL-A	,	H
+K	,	62	,	W_AL/2	,	H_AL	,	H
+K	,	63	,	W_CF/2	,	H_AL	,	H
+K	,	64	,	W_CF/2	,	H_AL+H_J/2	,	H
+K	,	65	,	W_CF/2	,	H_AL+H_J	,	H
+K	,	66	,	W_CF/2	,	H_AL+H_J+A	,	H
+K	,	67	,	W_CF/2	,	H_AL+H_J+H_CF	,	H
+K	,	68	,	0	,	H_AL+H_J+H_CF	,	H
+K	,	69	,	0	,	H_AL+H_J+A	,	H
+K	,	70	,	0	,	H_AL+H_J	,	H
+K	,	71	,	0	,	H_AL+H_J/2	,	H
+K	,	72	,	0	,	H_AL	,	H
+K	,	73	,	0	,	H_AL-A	,	H
+K	,	74	,	0	,	0	,	H
+K	,	75	,	W_CF/2	,	H_AL+H_J+A	,	0
+K	,	76	,	W_CF/2	,	H_AL+H_J+H_CF	,	0
+K	,	77	,	0	,	H_AL+H_J+H_CF	,	0
+K	,	78	,	0	,	H_AL+H_J+A	,	0
+K	,	79	,	W_CF/2	,	H_AL+H_J	,	-H
+K	,	80	,	W_CF/2	,	H_AL+H_J+A	,	-H
+K	,	81	,	W_CF/2	,	H_AL+H_J+H_CF	,	-H
+K	,	82	,	0	,	H_AL+H_J+H_CF	,	-H
+K	,	83	,	0	,	H_AL+H_J+A	,	-H
+K	,	84	,	0	,	H_AL+H_J	,	-H
+K	,	85	,	W_CF/2	,	H_AL-A	,	0
+K	,	86	,	W_CF/2	,	0	,	0
+K	,	87	,	W_CF/2+D	,	0	,	L_AL
+K	,	88	,	W_CF/2+D	,	H_AL-A	,	L_AL
+K	,	89	,	W_CF/2+D	,	H_AL	,	L_AL
+K	,	90	,	W_CF/2+D	,	H_AL	,	L_J+H
+K	,	91	,	W_CF/2+D	,	H_AL	,	L_J
+K	,	92	,	W_CF/2+D	,	H_AL	,	L_J-H
+K	,	93	,	W_CF/2+D	,	H_AL	,	H
+K	,	94	,	W_CF/2+D	,	H_AL	,	0
+K	,	95	,	W_CF/2+D	,	H_AL-A	,	0
+K	,	96	,	W_CF/2+D	,	0	,	0
+K	,	97	,	W_CF/2-D	,	0	,	L_AL
+K	,	98	,	W_CF/2-D	,	H_AL-A	,	L_AL
+K	,	99	,	W_CF/2-D	,	H_AL	,	L_AL
+K	,	100	,	W_CF/2-D	,	H_AL	,	L_J+H
+K	,	101	,	W_CF/2-D	,	H_AL	,	L_J
+K	,	102	,	W_CF/2-D	,	H_AL+H_J/2	,	L_J
+K	,	103	,	W_CF/2-D	,	H_AL+H_J	,	L_J
+K	,	104	,	W_CF/2-D	,	H_AL+H_J+A	,	L_J
+K	,	105	,	W_CF/2-D	,	H_AL+H_J+H_CF	,	L_J
+K	,	106	,	W_CF/2-D	,	H_AL+H_J+H_CF	,	L_J-H
+K	,	107	,	W_CF/2-D	,	H_AL+H_J+H_CF	,	H
+K	,	108	,	W_CF/2-D	,	H_AL+H_J+H_CF	,	0
+K	,	109	,	W_CF/2-D	,	H_AL+H_J+H_CF	,	-H
+K	,	110	,	W_CF/2-D	,	H_AL+H_J+H_CF	,	-L_CF+L_J
+K	,	111	,	W_CF/2-D	,	H_AL+H_J+A	,	-L_CF+L_J
+K	,	112	,	W_CF/2-D	,	H_AL+H_J	,	-L_CF+L_J
+K	,	113	,	W_CF/2-D	,	H_AL+H_J	,	-H
+K	,	114	,	W_CF/2-D	,	H_AL+H_J	,	0
+K	,	115	,	W_CF/2-D	,	H_AL+H_J/2	,	0
+K	,	116	,	W_CF/2-D	,	H_AL	,	0
+K	,	117	,	W_CF/2-D	,	H_AL-A	,	0
+K	,	118	,	W_CF/2-D	,	0	,	0
+K	,	119	,	W_CF/2+D	,	0	,	L_J+H
+K	,	120	,	W_CF/2-D	,	0	,	L_J+H
+K	,	121	,	W_CF/2+D	,	0	,	L_J
+K	,	122	,	W_CF/2-D	,	0	,	L_J
+K	,	123	,	W_CF/2+D	,	0	,	L_J-H
+K	,	124	,	W_CF/2-D	,	0	,	L_J-H
+K	,	125	,	W_CF/2+D	,	0	,	H
+K	,	126	,	W_CF/2-D	,	0	,	H
+K	,	127	,	W_CF/2	,	0	,	L_AL
+K	,	128	,	W_CF/2	,	0	,	L_J+H
+K	,	129	,	W_CF/2	,	0	,	L_J
+K	,	130	,	W_CF/2	,	0	,	L_J-H
+K	,	131	,	W_CF/2	,	0	,	H
+K	,	132	,	W_CF/2	,	H_AL-A	,	L_AL
+K	,	133	,	W_CF/2	,	H_AL	,	L_AL
+K	,	134	,	W_CF/2	,	H_AL	,	L_J+H
+
+K	,	135	,	W_CF/2-D	,	H_AL	,	H
+K	,	136	,	W_CF/2-D	,	H_AL	,	L_J-H
+
+K	,	137	,	W_AL/2	,	0	,	L_AL-L_L
+K	,	138	,	W_AL/2	,	H_AL	,	L_AL-L_L
+K	,	139	,	0	,	H_AL	,	L_AL-L_L
+K	,	140	,	0	,	0	,	L_AL-L_L
+K	,	141	,	W_CF/2	,	H_AL+H_J	,	-L_CF+L_J+L_L
+K	,	142	,	W_CF/2	,	H_AL+H_J+H_CF	,	-L_CF+L_J+L_L
+K	,	143	,	0	,	H_AL+H_J+H_CF	,	-L_CF+L_J+L_L
+K	,	144	,	0	,	H_AL+H_J	,	-L_CF+L_J+L_L
+
+K	,	145	,	W_CF/2	,	H_AL+H_J+H_CF*2/3	,	-L_CF+L_J
+K	,	146	,	W_CF/2	,	H_AL+H_J+H_CF*2/3	,	L_J
+K	,	147	,	0	,	H_AL+H_J+H_CF*2/3	,	L_J
+K	,	148	,	0	,	H_AL+H_J+H_CF*2/3	,	-L_CF+L_J
+
+
+
+K	,	149	,	0	,	H_AL+PIN_H	,	L_J
+K	,	150	,	0	,	H_AL+PIN_H	,	0
+K	,	151	,	-W_CF/2	,	H_AL+PIN_H	,	L_J
+K	,	152	,	-W_CF/2	,	H_AL+PIN_H	,	0
+K	,	153	,	-W_CF/2	,	0	,	L_J
+K	,	154	,	-W_CF/2	,	0	,	0
+
+
+!-構築------------------------------------------------------
+
+
+
+!-ヴォリューム構築------------------------------------------------------
+
+
+!---試験片下部--------------------------------------------
+
+V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
+V	,	26	,	27	,	28	,	29	,	5	,	6	,	7	,	8
+V	,	1	,	60	,	74	,	4	,	5	,	62	,	72	,	8
+V	,	45	,	40	,	44	,	59	,	47	,	42	,	11	,	57
+V	,	40	,	34	,	39	,	44	,	42	,	36	,	37	,	11
+V	,	96	,	87	,	127	,	86	,	94	,	89	,	133	,	9
+V	,	86	,	127	,	97	,	118	,	9	,	133	,	99	,	116
+V	,	137	,	2	,	3	,	140	,	138	,	6	,	7	,	139
+
+VOVLAP,ALL !重なった部分のヴォリューム作成
+
+!---接着層--------------------------------------------
+
+!V	,	9	,	10	,	11	,	8	,	17	,	18	,	19	,	20
+!V	,	9	,	10	,	11	,	8	,	12	,	13	,	14	,	15
+!V	,	9	,	63	,	72	,	8	,	17	,	65	,	70	,	20
+!V	,	48	,	10	,	11	,	57	,	50	,	18	,	19	,	55
+!V	,	9	,	10	,	101	,	116	,	17	,	18	,	103	,	114
+
+!---試験片上部--------------------------------------------
+
+V	,	16	,	18	,	19	,	21	,	22	,	23	,	24	,	25
+V	,	16	,	18	,	19	,	21	,	30	,	31	,	32	,	33
+V	,	30	,	31	,	32	,	33	,	145	,	146	,	147	,	148
+V	,	79	,	17	,	20	,	84	,	81	,	76	,	77	,	82
+V	,	17	,	65	,	70	,	20	,	76	,	67	,	68	,	77
+V	,	50	,	18	,	19	,	55	,	52	,	23	,	24	,	53
+V	,	16	,	18	,	103	,	112	,	22	,	23	,	105	,	110
+V	,	16	,	141	,	144	,	21	,	22	,	142	,	143	,	25
+
+VSEL,S,LOC,Y,H_AL+H_J,H_AL+H_J+H_CF
+CM, PLANE, VOLU
+VOVLAP,PLANE !重なった部分のヴォリューム作成
+ALLSEL
+CM, PLANE, VOLU
+VSEL,S,LOC,Y,0,H_AL
+CM, PLANEAL, VOLU
+ALLSEL
+VSEL,S,LOC,Y,H_AL,H_AL+H_CF
+CM, PLANECF, VOLU
+
+CMSEL,S,PLANE
+!VGLUE,ALL
+
+
+!>>ピン球座標>>>>>>>>>>
+WPOFFS,	0	,	H_AL+PIN_H-PIN_DBALL/2	,	L_J/2
+WPROTA, 0, 90, 0
+CYLIND, PIN_D/2,0,0,H_AL+PIN_H-PIN_DBALL/2, -90, 90
+
+WPCSYS, -1
+
+ALLSEL
+CMSEL,U,PLANE !コンポーネント選択解除
+
+CM, PINBIG, VOLU
+
+WPOFFS,	0	,	H_AL+H_CF	,	L_J/2
+WPROTA, 0, 90, 0
+CYLIND, PIN_D/2,0,0,H_CF, -90, 90
+
+WPCSYS, -1
+
+
+ALLSEL
+CMSEL,U,PLANE !コンポーネント選択解除
+CMSEL,U,PINBIG
+CM, PINSMALL, VOLU
+
+
+
+
+
+ALLSEL
+
+WPOFFS,	0	,	H_AL+PIN_H-PIN_DBALL/2	,	L_J/2
+WPROTA, 0, 90, 0
+CYLIND, PIN_D/2,0,0,H_AL+PIN_H-PIN_DBALL/2, -90, 90
+
+ALLSEL
+CMSEL,U,PLANE !コンポーネント選択解除
+CMSEL,U,PINBIG
+CMSEL,U,PINSMALL
+CM, PINDELETE, VOLU
+
+
+
+ALLSEL
+VSBV, PINBIG, PINSMALL, , KEEP, DELETE
+
+!>>ピン穴座標>>>>>>>>>>
+
+
+
+ALLSEL
+CMSEL,U,PLANE !コンポーネント選択解除
+CMSEL,U, PINDELETE
+CM, PIN, VOLU
+
+
+
+
+
+ASLV, S
+CM, PINAA, AREA
+
+ALLSEL
+!VSBV, PLANEAL, PIN,  , DELETE, KEEP
+VSBV, PLANE, PINDELETE,  , DELETE, DELETE
+
+
+!ALLSEL
+!VSBV, PLANECF, PIN,  , DELETE, KEEP
+
+ALLSEL
+CMSEL,U,PIN
+CM, PLANE, VOLU
+
+VSEL,S,LOC,Y,0,H_AL
+CM, ALMI, VOLU
+
+
+ALLSEL
+CMSEL,U,PIN
+CMSEL,U,ALMI
+CM, CFRP, VOLU
+
+
+ALLSEL
+
+
+
+
+
+
+
+!-CF部のローカル座標定義用の式--------------------------------------------------
+
+CONSTANT1 = (PIN_D*PIN_D+4*PIN_D*CFRP_D)
+CONSTANT1_2 = SQRT(CONSTANT1) 
+
+
+CONSTANT2 = L_J/2+PIN_D/2
+
+CONSTANT2_2 = L_J/2-PIN_D/2
+
+
+Z_01 = (L_J+CONSTANT1_2)/2   !ピンから1と2本目とフィラメントの曲線終了部分の接点
+
+
+Z_02 =  (L_J-CONSTANT1_2)/2   !ピンから1と2本目とフィラメントの曲線終了部分の接点
+
+
+!X_1 =0
+
+!*DO, J, 0, W_CF/2, CFRP_D   !ループ
+
+!X_1 = X_1+CFRP_D
+
+!CONSTANT3 = (Z_01-CONSTANT2)*X_1
+
+!CONSTANT4 = CONSTANT3/CFRP_D
+
+!Z_1 = CONSTANT4+CONSTANT2
+
+
+
+!N, ,X_1,H_AL,Z_1
+
+!N, ,X_1,H_AL+H_CF/3,Z_1
+
+!N, , X_1, H_AL+H_CF*2/3, Z_1
+
+!N, , X_1, H_AL+H_CF, Z_1
+
+!CONSTANT3_2 = (Z_02-CONSTANT2_2)*X_1
+
+!CONSTANT4_2 = CONSTANT3_2/CFRP_D
+
+
+!Z_2 = CONSTANT4_2+CONSTANT2_2
+
+!N, , X_1, H_AL, Z_2
+
+!N, , X_1, H_AL+H_CF/3, Z_2
+
+!N, , X_1, H_AL+H_CF*2/3, Z_2
+
+!N, , X_1, H_AL+H_CF, Z_2
+
+!*IF, J, GE, W_CF/2, EXIT
+
+!*ENDDO
+
+!-CF部のローカル座標定義--------------------------------------------------
+
+LOCAL,11,0,0,0,0,0,0,90
+CSYS,0
+
+!-CF部の繊維方向定義--------------------------------------------------
+
+!>>>>1層目>>>>>>>>>>>>
+VSEL,S,LOC,Y,H_AL+H_J,H_AL+H_J+H_CF/3
+VATT,1,,1,0
+VSEL,R,LOC,Z,L_J-H,L_J
+VATT,1,,1,11
+!>>>>2層目>>>>>>>>>>>>
+VSEL,S,LOC,Y,H_AL+H_J+H_CF/3,H_AL+H_J+H_CF*2/3
+VATT,1,,1,0
+VSEL,R,LOC,Z,L_J-H,L_J
+VATT,1,,1,11
+!>>>>3層目>>>>>>>>>>>>
+VSEL,S,LOC,Y,H_AL+H_J+H_CF*2/3,H_AL+H_J+H_CF
+VATT,1,,1,0
+VSEL,R,LOC,Z,L_J-H,L_J
+VATT,1,,1,11
+!-メッシュ分割--------------------------------------------------
+
+ALLSEL
+AESIZE,ALL,DIV3
+
+ASEL,S,LOC,X,W_CF/2-D,W_CF/2+D
+ASEL,R,LOC,Y,H_AL-A,H_AL+H_J+H_CF*1/3
+ASEL,R,LOC,Z,L_J-H,L_J+H
+AESIZE,ALL,DIV1
+
+ASEL,S,LOC,X,W_CF/2-D,W_CF/2+D
+ASEL,R,LOC,Y,H_AL-A,H_AL+H_J+H_CF*1/3
+ASEL,R,LOC,Z,-H,H
+AESIZE,ALL,DIV1
+
+!ASEL,S,LOC,X,0,W_CF/2-D
+!ASEL,R,LOC,Y,H_AL,H_AL+H_J+H_CF*1/3
+!ASEL,R,LOC,Z,0,L_J
+!AESIZE,ALL,DIV2
+
+ASEL,S,LOC,Z,H,L_J-H
+ASEL,R,LOC,Y,H_AL,H_AL+H_J+H_CF
+ASEL,R,LOC,X,0,W_CF/2-D
+AESIZE,ALL,DIV2
+
+!ASEL,S,LOC,Z,H,L_J-H
+!AESIZE,ALL,DIV2
+
+
+ASEL, S, LOC, X, 0, PIN_D/2
+ASEL, R, LOC, Y, 0, H_AL+H_CF
+ASEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
+AESIZE,ALL,DIV5
+
+ALLSEL
+CMSEL,S,PINAA
+!CMSEL,S,PIN
+AESIZE,ALL,DIV4
+
+!ALLSEL
+!ASEL,S,LOC,X,W_CF/2
+!ASEL,R,LOC,Y,H_AL,H_AL+H_CF
+!ASEL,R,LOC,Z,H,L_J-H
+!AESIZE,ALL,DIV1
+
+
+
+ALLSEL
+ASEL,S,LOC,Y,0,H_AL
+ASEL,R,LOC,Z,L_J-H,L_AL
+AESIZE,ALL,DIV3
+
+!ALLSEL
+!KSEL,S,LOC,X,W_CF/2
+!KSEL,R,LOC,Y,H_AL,H_AL+H_CF
+!KSEL,R,LOC,Z,L_J*3/7,L_J*4/7
+
+
+ALLSEL
+!VGLUE,ALL  !←これがあるとピンのメッシングが変わる
+
+
+
+!-試験片AL部メッシュ--------------------------------------------
+
+
+CMSEL,S,PIN
+CMSEL,A,ALMI
+!VADD,ALL
+
+VOVLAP,ALL
+
+VGLUE,ALL
+CM, ALMI3, VOLU
+
+
+
+VSEL,S,LOC,Y,0,H_AL
+VSEL,R,LOC,Z,L_J-H,L_AL
+CM, ALMI2, VOLU
+
+TYPE,1                             !要素1
+MAT,2                             !材料2
+MSHAPE,0,3D
+MSHKEY,1
+VMESH,ALL
+MOPT,DEFA
+
+
+
+ALLSEL
+CMSEL,U,CFRP
+CMSEL,U,ALMI2
+
+VSWEEP,ALL
+
+
+ALLSEL
+
+!ESEL,S,MAT,,1
+!MPCHG, 2, ELEM
+
+!-接着層メッシュ--------------------------------------------
+!VSEL,S,LOC,Y,H_AL,H_AL+H_J
+!TYPE,2                             !要素1
+!MAT,2                             !材料2
+!VSWEEP,ALL
+!MOPT,DEFA
+
+
+!-試験片CF部メッシュ--------------------------------------------
+
+
+VSEL,S,LOC,Y,H_AL+H_J,H_AL+H_J+H_CF
+CMSEL,U,ALMI3
+
+
+VGLUE,ALL
+!CMSEL,U,PIN
+
+
+
+TYPE,1                             !要素1
+MAT,1                             !材料1
+VSWEEP,ALL
+
+MOPT,DEFA
+
+
+
+!-------------------------------------------------
+!ALLSEL
+!NSEL,S,LOC,X,W_CF/2
+!NSEL,R,LOC,Y,H_AL,H_AL+H_CF
+!NSEL,R,LOC,Z,L_J*3/7,L_J*4/7
+
+
+!NREFINE, ALL,,, 1, 1, CLEAN, OFF
+
+!-CF部の繊維方向定義--------------------------------------------------
+
+ALLSEL
+
+
+VSEL,S,LOC,Y,H_AL+H_J,H_AL+H_J+H_CF
+VSEL,R,LOC,Z,0,L_J
+ESLV,S
+*GET, MINELEM, ELEM, 0, NUM, MIN
+*GET, MAXELEM, ELEM, 0, NUM, MAX
+
+*DO, I, MINELEM, MAXELEM, 1   !ループ
+
+*GET, ELEM_X, ELEM, I, CENT, X
+*GET, ELEM_Y, ELEM, I,CENT, Y
+*GET, ELEM_Z, ELEM, I,CENT, Z
+
+*IF, ELEM_X, GT, W_CF/2, CYCLE
+*IF, ELEM_Y, LT, H_AL, CYCLE
+*IF, ELEM_Y, GT, H_AL+H_CF, CYCLE
+*IF, ELEM_Z, GT, L_J, CYCLE
+*IF, ELEM_Z, LT, L_J/2, CYCLE
+
+CONSTANT_Z = ELEM_Z-L_J/2
+CONSTANT_X = ELEM_X
+CONSTANT_A =-W_CF/L_J
+
+CONSTANT_XX = CONSTANT_A*CONSTANT_Z + W_CF/2
+
+*IF, CONSTANT_X, GT, CONSTANT_XX, CYCLE
+
+*AFU, DEG
+ATAN = ATAN(CONSTANT_A)
+
+
+LOCAL, 200+I, CART, 0, 0, 0, 0, 0, ATAN
+EMODIF, I, ESYS, 200+I,
+
+
+
+ALLSEL
+CSYS,0
+*ENDDO
+
+
+
+
+
+
+!----------------------------------------------------
+
+
+
+
+
+!接触要素--------------------------------------------
+c1  = 1E6    !法線方向の接触応力と等価の最大値
+c2  = 0.7E3   !法線方向分離のための臨界破壊エネルギー
+c3  = 2.42E6   !接線方向の接触応力と等価の最大値
+c4  = 0.7E3   !接線方向滑りのための臨界破壊エネルギー
+c5 = 1E-3
+c6 =  1   !法線方向の圧縮力が生じているときに接戦方向に剥離するか
+kslope = 1.3E9  !接触剛性FKN
+pinb= 2E-4
+pinb2= 2E-4
+
+ET,3,TARGE170       ! 接触要素ターゲット面
+ET,4,CONTA174       ! 接触要素コンタクト面
+ET,5,TARGE170       ! 接触要素ターゲット面
+ET,6,CONTA174       ! 接触要素コンタクト面
+ET,7,TARGE170       ! 接触要素ターゲット面
+ET,8,CONTA177       ! 接触要素コンタクト面
+ET,9,TARGE170       ! 接触要素ターゲット面
+ET,10,CONTA177       ! 接触要素コンタクト面
+KEYOPT,CONT,12,5       ! 接触面の挙動()
+KEYOPT,CONT,7,1        !要素レベルの時間増分制御/影響制約
+!KEYOPT,CONT,4,1       !接触検出ポイントの場所
+KEYOPT,CONT,5,3      !自動CNOFでギャップを埋める/浸透を減らす
+KEYOPT,CONT,10,1      !接触剛性の更新
+KEYOPT,CONT,9,1       !自動CNOFでギャップを埋める/浸透を減らす
+
+KEYOPT,8,3,2       ! 接触面の挙動()
+KEYOPT,10,3,2       ! 接触面の挙動()
+
+
+R,3,,,-kslope,,,-pinb         ! リアルコンスタンス定義  
+R,4,,,-kslope,,,-pinb2        ! リアルコンスタンス定義   
+R,5,,,-kslope,,,-pinb2        ! リアルコンスタンス定義   
+R,6,,,-kslope,,,-pinb2        ! リアルコンスタンス定義 
+
+R,7,,,-kslope,,,-pinb         ! リアルコンスタンス定義  
+R,8,,,-kslope,,,-pinb2        ! リアルコンスタンス定義
+
+R,9,,,-kslope,,,-pinb2        ! リアルコンスタンス定義
+
+TB,CZM,3,1,1,CBDE   ! 粘着材料の定義
+TBDATA,1,c1,c2,c3,c4,c5,c6
+
+TB,CZM,4,1,1,CBDE   ! 粘着材料の定義
+TBDATA,1,c1,c2,c3,c4,c5,c6
+
+TB,CZM,5,1,1,CBDE   ! 粘着材料の定義
+TBDATA,1,c1,c2,c3,c4,c5,c6
+
+
+TB,CZM,6,1,1,CBDE   ! 粘着材料の定義
+TBDATA,1,c1,c2,c3,c4,c5,c6
+
+
+TB,CZM,7,1,1,CBDE   ! 粘着材料の定義
+TBDATA,1,c1,c2,c3,c4,c5,c6
+
+TB,CZM,8,1,1,CBDE   ! 粘着材料の定義
+TBDATA,1,c1,c2,c3,c4,c5,c6
+
+!接触要素の生成---------------------------------------------
+ALLSEL
+
+TYPE,3
+MAT,3
+REAL,3
+ESEL,S,MAT,,1
+NSLE, S, ALL
+NSEL,R,LOC,Z,0,L_J
+NSEL,R,LOC,Y,H_AL
+ESURF   ! 接触要素の生成(ターゲット面
+
+ALLSEL
+
+TYPE,4
+MAT,3
+REAL,3
+ESEL,S,MAT,,2
+NSLE, S, ALL
+NSEL,R,LOC,Z,0,L_J
+NSEL,R,LOC,Y,H_AL
+CM, CONTA21, NODE
+ESURF   ! 接触要素の生成(コンタクト面
+
+ALLSEL
+ESEL,S,MAT,,2
+NSLE, S, ALL
+NSEL,R,LOC,X,0
+NSEL, R, LOC, Z, L_J/2-PIN_D/2+DIV4, L_J/2+PIN_D/2-DIV4
+CM, CONTA1, NODE
+
+
+ALLSEL
+TYPE,6
+MAT,4
+REAL,4
+ESEL,S,MAT,,2
+NSLE, S, ALL
+NSEL, R, LOC, X, 0, PIN_D/2
+NSEL, R, LOC, Y, H_AL, H_AL+H_CF
+NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
+CMSEL,U,CONTA1 !コンポーネント選択解除
+CM, CONTA11, NODE
+ESURF   ! 接触要素の生成(コンタクト面
+
+
+ALLSEL
+
+TYPE,5
+MAT,4
+REAL,4
+ESEL,S,MAT,,1
+NSLE, S, ALL
+NSEL, R, LOC, X, 0, PIN_D/2
+NSEL, R, LOC, Y, H_AL, H_AL+H_CF
+NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
+CM, CONTA12, NODE
+
+ESURF   ! 接触要素の生成(ターゲット面
+
+
+
+
+
+
+
+
+ALLSEL
+
+TYPE,4
+MAT,7
+REAL,7
+ESEL,S,MAT,,1
+NSLE, S, ALL
+NSEL,R,LOC,Z,0,L_J
+NSEL,R,LOC,Y,H_AL
+ESURF   ! 接触要素の生成(ターゲット面
+
+ALLSEL
+
+TYPE,3
+MAT,7
+REAL,7
+ESEL,S,MAT,,2
+NSLE, S, ALL
+NSEL,R,LOC,Z,0,L_J
+NSEL,R,LOC,Y,H_AL
+CM, CONTA21, NODE
+ESURF   ! 接触要素の生成(コンタクト面
+
+ALLSEL
+ESEL,S,MAT,,2
+NSLE, S, ALL
+NSEL,R,LOC,X,0
+NSEL, R, LOC, Z, L_J/2-PIN_D/2+DIV4, L_J/2+PIN_D/2-DIV4
+CM, CONTA1, NODE
+
+m
+ALLSEL
+TYPE,5
+MAT,8
+REAL,8
+ESEL,S,MAT,,2
+NSLE, S, ALL
+NSEL, R, LOC, X, 0, PIN_D/2
+NSEL, R, LOC, Y, H_AL, H_AL+H_CF
+NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
+CMSEL,U,CONTA1 !コンポーネント選択解除
+CM, CONTA11, NODE
+ESURF   ! 接触要素の生成(コンタクト面
+
+
+ALLSEL
+
+TYPE,6
+MAT,8
+REAL,8
+ESEL,S,MAT,,1
+NSLE, S, ALL
+NSEL, R, LOC, X, 0, PIN_D/2
+NSEL, R, LOC, Y, H_AL, H_AL+H_CF
+NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
+CM, CONTA12, NODE
+
+ESURF   ! 接触要素の生成(ターゲット面
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ALLSEL
+TYPE,8
+MAT,5
+REAL,5
+ESEL,S,MAT,,1
+CMSEL,S,CONTA12 !コンポーネント選択
+NSEL, R, LOC, Y, H_AL
+!NSEL, R, LOC, X, 0
+!NSEL, R, LOC, Z, L_J/2-PIN_D/2
+
+ESURF   ! 接触要素の生成(コンタクト面
+
+
+ALLSEL
+TYPE,7
+MAT,5
+REAL,5
+ESEL,S,MAT,,2
+CMSEL,S,CONTA21 !コンポーネント選択
+ESURF   ! 接触要素の生成(ターゲット面
+
+ALLSEL
+TYPE,10
+MAT,6
+REAL,6
+ESEL,S,MAT,,1
+CMSEL,S,CONTA12 !コンポーネント選択
+NSEL, R, LOC, Y, H_AL+H_CF
+!NSEL, R, LOC, X, 0
+!NSEL, R, LOC, Z, L_J/2-PIN_D/2
+ESURF   ! 接触要素の生成(コンタクト面
+
+
+ALLSEL
+TYPE,9
+MAT,6
+REAL,6
+ESEL,S,MAT,,2
+CMSEL,S,CONTA11 !コンポーネント選択
+ESURF   ! 接触要素の生成(ターゲット面
+
+
+
+
+
+
+
+ALLSEL
+TYPE,8
+MAT,5
+REAL,9
+ESEL,S,MAT,,1
+
+NSEL, R, LOC, Y, H_AL
+NSEL, R, LOC, X, W_CF/2
+NSEL, R, LOC, Z, 0,L_J
+
+ESURF   ! 接触要素の生成(コンタクト面
+
+
+ALLSEL
+TYPE,7
+MAT,5
+REAL,9
+ESEL,S,MAT,,2
+CMSEL,S,CONTA21 !コンポーネント選択
+ESURF   ! 接触要素の生成(ターゲット面
+
+
+!-境界条件指定--------------------------------------------------
+ALLSEL
+
+ASEL,S,LOC,X,0 !面対称
+NSLA,S,1 
+DSYM, SYMM, X
+
+ASEL,S,LOC,Z,L_AL !グリップ固定
+NSLA,S,1 
+D,ALL,UZ,0
+D,ALL,UX,0
+
+
+ASEL,S,LOC,Z,L_AL-L_L,L_AL
+ASEL,R,LOC,Y,H_AL
+NSLA,S,1 
+D,ALL,UY,0
+
+ASEL,S,LOC,Z,L_AL-L_L,L_AL
+ASEL,R,LOC,Y,0
+NSLA,S,1 
+D,ALL,UY,0
+
+ASEL,S,LOC,Z,-L_CF+L_J,-L_CF+L_J+L_L
+ASEL,R,LOC,Y,H_AL+H_J
+NSLA,S,1
+D,ALL,UY,0
+
+
+ASEL,S,LOC,Z,-L_CF+L_J,-L_CF+L_J+L_L
+ASEL,R,LOC,Y,H_AL+H_J+H_CF
+NSLA,S,1
+D,ALL,UY,0
+
+
+ASEL,S,LOC,Z,-L_CF+L_J !荷重負荷面カップリング
+NSLA,S,1
+CP,NEXT,UZ,ALL
+
+*GET,NNUM,NODE,,NUM,MIN !最小の節点選択
+D,NNUM,UZ,DISTANCE !節点引張距離
+
+
+ALLSEL !節点全選択
+
+
+WPCSYS, -1
+
+!-解析------------------------------------------------------
+FINISH  
+/POST1
+
+  
+FINISH  
+/SOL
+
+!/STATUS,SOLU
+
+!semiimplicit,msca,dtim,1/5000000    ! Use a selective mass scaling factor such that the semi-implicit 
+                                 ! solution phase uses time increments of the order 1/500000
+!semiimplicit,etoi,time,0.01       ! Time to spend in the semi-implicit phase is 0.1
+!semiimplicit,SFAC,,0.9 !半陰解法_安全率   
+
+
+semiimplicit,msca,dtim,4e-9    ! Use a selective mass scaling factor such that the semi-implicit 
+                                 ! solution phase uses time increments of the order 1/500000
+semiimplicit,etoi,time,0.001       ! Time to spend in the semi-implicit phase is 0.1
+semiimplicit,SFAC,,0.1 !半陰解法_安全率
+!SEMIIMPLICIT,AUTS,DSPL,10
+SEMIIMPLICIT,AUTS,ENER,1
+
+
+NLGEOM,ON          !静的解析または完全非定常解析に大きなたわみ効果を含める
+!NROPT,UNSYM       !非対称振るニュートンらお薄法に切り替えるー接触要素収束対策
+NSUBST,100,1000,100 ! データベースとファイルの書き込み制御の結果アイテム
+TIME,TIME1
+
+OUTRES,ERASE
+
+!OUTRES,ALL,ALL  
+OUTRES,NSOL,1    !節点の自由度の解
+OUTRES,ESOL,1    !次の要素ソリューションアイテムをすべて有効または無効にする
+OUTRES,RSOL,1    !節点反応荷重
+OUTRES,NLOAD,1    !要素の節点、入力拘束、および力の荷重（POST1コマンドのPRRFOR、NFORCE、FSUMでも使用され、反力の荷重を計算します）。
+OUTRES,MISC,1    !エレメントのその他のデータ（ETABLEコマンドのSMISCおよびNMISCアイテム）
+
+
+
+
+
+SAVE
+SOLVE   
+
+
+
+FINISH  
+
+/POST26
+
+RFORCE, 2, NNUM, F, Z, FZ
+prvar,2, !変数2をリストに表示
+
+
+
+
+/INPUT, calcarea2, txt, , , 
+
+
+/INPUT, calcareaB, txt, , , 
+
+
+
+
+!-XYせん断応力コンター表示-----------------------------------------------------
+/POST1  
+SET,LAST
+
+
+
+WPLANE, 1, 0, H_AL+H_CF*1/2, 0, 0, H_AL+H_CF*1/2, L_J, W_AL/2, H_AL+H_CF*1/2, L_J
+/CPLANE, 1
+/TYPE,1,8
+
+
+/cmap,col,cmap
+/cont,,ncont
+/show,win32c,,,8
+!/CONTOUR,1,128,-0.3E8,,0.664E9
+!/CONTOUR,1,128,0.1E8,,0.100E9
+!/CONTOUR,1,128,-0.94E8,,0.32E8
+!/CONTOUR,1,128,-0.36E8,,0.32E8
+
+!/CONTOUR,1,128,-0.3E8,,0.100E9
+
+!/CONTOUR,1,128,-0.3E8,,0.150E9
+
+/EFACET,1
+
+PLNSOL, S,Z,0,1.0
+
+PLNSOL, PDMG,STAT,0,1.0 !破壊基準コンター図表示
+
+/DSCALE, 1, OFF
+!/DSCALE, 1, 10
+/DSCALE, 1, 1
+/REP
+
+
+
+
+PRNSOL,S,COMP
+
+
+
+
+
+
+!-せん断応力グラフ表示-----------------------------------------------------
+PATH,P1,2,30,400         !PATH1設定
+PPATH	,	1	,,	W_CF/2	,	H_AL	,	0
+PPATH	,	2	,,	W_CF/2	,	 H_AL	,	L_J
+
+
+
+/OUTPUT,test-follow-pin_result,txt,
+
+
+PATH,P1 
+PDEF,STAT
+PDEF,S_XX,S,X
+PDEF,S_YY,S,Y
+PDEF,S_ZZ,S,Z
+PDEF,S_YZ,S,YZ
+PDEF,S_EQV,S,EQV
+PRPATH,S_ZZ,S_YY,S_YZ,S_EQV       !行列表示
+
+
+/OUTPUT

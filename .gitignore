@@ -1,0 +1,5 @@
+py
+.DS_Store
+old/
+__pycache__
+.VSCodeCounter

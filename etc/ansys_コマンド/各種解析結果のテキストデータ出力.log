@@ -1,0 +1,15 @@
+/POST1
+/format,,,,4
+esel,mat,1
+! 応力データ
+/output,strain_stress,txt
+PRNSOL,COMP
+/out
+! 主応力データ
+/output,principal_stress,txt
+PRNSOL,PRIN
+/out
+! 破壊基準値データ
+/output,failure_index,txt
+PRNSOL,FAIL
+/out

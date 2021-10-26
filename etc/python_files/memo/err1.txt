@@ -1,0 +1,103 @@
+ *****  ANSYS SOLVE    COMMAND  *****
+
+ *** SELECTION OF ELEMENT TECHNOLOGIES FOR APPLICABLE ELEMENTS ***
+                ---GIVE SUGGESTIONS ONLY---
+
+ ELEMENT TYPE    1 IS SOLID186. KEYOPT(2) IS ALREADY SET AS SUGGESTED.
+
+
+
+ *** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE Release 17.2     17.2     ***
+ ANSYS Mechanical Enterprise
+ 00654237  VERSION=WINDOWS x64   18:55:16  SEP 29, 2021 CP=      2.516
+
+ TEST
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D
+   DEGREES OF FREEDOM. . . . . . UX   UY   UZ
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .STATIC (STEADY-STATE)
+   PLASTIC MATERIAL PROPERTIES INCLUDED. . . . . .YES
+   NEWTON-RAPHSON OPTION . . . . . . . . . . . . .PROGRAM CHOSEN
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC
+
+ *** NOTE ***                            CP =       2.547   TIME= 18:55:16
+ Poisson's ratio PR input has been converted to NU input.
+
+ *** NOTE ***                            CP =       2.547   TIME= 18:55:16
+ This nonlinear analysis defaults to using the full Newton-Raphson
+ solution procedure.  This can be modified using the NROPT command.
+
+ SOLCONTROL,ON uses sparse matrix direct solver
+
+ *** NOTE ***                            CP =       2.547   TIME= 18:55:16
+ The conditions for direct assembly have been met.  No .emat or .erot
+ files will be produced.
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  2.0000
+   AUTOMATIC TIME STEPPING . . . . . . . . . . . .    ON
+      INITIAL NUMBER OF SUBSTEPS . . . . . . . . .   100
+      MAXIMUM NUMBER OF SUBSTEPS . . . . . . . . .  1000
+      MINIMUM NUMBER OF SUBSTEPS . . . . . . . . .   100
+   MAXIMUM NUMBER OF EQUILIBRIUM ITERATIONS. . . .    15
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   TERMINATE ANALYSIS IF NOT CONVERGED . . . . . .YES (EXIT)
+   CONVERGENCE CONTROLS. . . . . . . . . . . . . .USE DEFAULTS
+   COPY INTEGRATION POINT VALUES TO NODE . . . . .YES, FOR ELEMENTS WITH
+                                                  ACTIVE MAT. NONLINEARITIES
+   PRINT OUTPUT CONTROLS . . . . . . . . . . . . .NO PRINTOUT
+   DATABASE OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+      NSOL        ALL
+      ESOL        ALL
+      RSOL        ALL
+      NLOA        ALL
+      MISC        ALL
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= C2_l10_th05.mntr
+
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 50252060.7 at element 9090.
+ Minimum = 12450793.7 at element 75.
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+  TYPE    NUMBER   ENAME      TOTAL CP  AVE CP
+
+     1     10875  SOLID186      3.344   0.000307
+ Time at end of element matrix formulation CP = 4.96875.
+
+ ALL CURRENT ANSYS DATA WRITTEN TO FILE NAME= C2_l10_th05.rdb
+  FOR POSSIBLE RESUME FROM THIS POINT
+     FORCE CONVERGENCE VALUE  =  1252.      CRITERION=  6.386
+
+ SPARSE MATRIX DIRECT SOLVER.
+  Number of equations =      130464,    Maximum wavefront =    180
+
+ *** NOTE ***                            CP =       5.594   TIME= 18:55:18
+ The initial memory allocation (-m) has been exceeded.
+  Supplemental memory allocations are being used.
+  Memory allocated for solver =        1397.904 MB
+  Memory required for in-core =        1094.751 MB
+
+
+ *** NOTE ***                            CP =       7.422   TIME= 18:55:20
+ The Sparse Matrix solver is currently running in the in-core memory
+ mode.  This memory mode uses the most amount of memory in order to
+ avoid using the hard drive as much as possible, which most often
+ results in the fastest solution time.  This mode is recommended if
+ enough physical memory is present to accommodate all of the solver
+ data.
+ Sparse solver maximum pivot= 154765721 at node 42952 UX.
+ Sparse solver minimum pivot= 37728.7426 at node 16425 UZ.
+ Sparse solver minimum pivot in absolute value= 37728.7426 at node 16425
+ UZ.
+
+Ignore these messages by setting allow_ignore=True

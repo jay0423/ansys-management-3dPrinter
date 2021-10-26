@@ -1,0 +1,16 @@
+*CFOPEN,node_coordinates,csv
+
+*GET,num_nodes_,NODE,0,COUNT
+*GET,node_,NODE,0,NUM,MIN
+
+*DO,i,1,num_nodes_,1
+*GET,nx_,NODE,node_,LOC,X
+*GET,ny_,NODE,node_,LOC,Y
+    
+*VWRITE,node_,nx_,ny_
+(F8.0,',',E10.4,',',E10.4,)
+  
+*GET,node_,NODE,node_,NXTH
+  
+*ENDDO
+*CFCLOSE

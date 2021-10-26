@@ -3,3 +3,5 @@ py
 old/
 __pycache__
 .VSCodeCounter
+settings_child.py
+ansys_management.py

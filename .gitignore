@@ -4,5 +4,6 @@ old/
 __pycache__
 .VSCodeCounter
 settings_child.py
+ansys_management/
 ansys_management.py
 path.xlsx

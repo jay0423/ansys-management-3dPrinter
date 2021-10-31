@@ -15,7 +15,7 @@ finish
 
 !-基本定義--------------------------------------------------
 ANTYPE,STATIC        ! 静解析
-ET,1,SOLID185       ! 試験片ALとCFRPにSOLID185を使用
+ET,1,SOLID186       ! 試験片ALとCFRPにSOLID185を使用
 
 /NOPR                !構造解析
 KEYW,PR_SET,1   
@@ -65,7 +65,7 @@ AsuXYZ = 35.1E6 !引張強度
 SendanXYZ_1 = 20E6 !せん断許容応力
 !MITUDO2= 2790   !質量密度
 
-     
+
 MP,EX,1,Aee1        ! 材料2:AL
 MP,EY,1,Aee1  
 MP,EZ,1,Aee1  
@@ -93,7 +93,7 @@ SendanXYZ_2= 10E6 !せん断許容応力
 
 !MITUDO2= 2790   !質量密度
 
-     
+
 MP,EX,2,Bee1        ! 材料2:AL
 MP,EY,2,Bee1  
 MP,EZ,2,Bee1  
@@ -132,7 +132,7 @@ SendanXYZ = 90.4E6 !せん断許容応力
 MP,EX,3,Cee1        ! 材料1:CFRTP
 MP,EY,3,Cee3  
 MP,EZ,3,Cee2 
- 
+
 MP,PRXY,3,Cnu12
 MP,PRYZ,3,Cnu23
 MP,PRXZ,3,Cnu13

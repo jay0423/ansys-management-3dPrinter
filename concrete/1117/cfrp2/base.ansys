@@ -50,7 +50,7 @@ TIME1 = 1.5
 
 
 !-材料物性定義----------------------------------------------
-!>>>>>材料2>>>>>>>
+!>>>>>材料1>>>>>>>
 ! concrete
 Aee1 = 35E9!全方向弾性率
 
@@ -64,17 +64,16 @@ SendanXYZ_1 = 3E6 !せん断許容応力
 !MITUDO2= 2790   !質量密度
 
 
-MP,EX,2,Bee1        ! 材料2:AL
-MP,EY,2,Bee1  
-MP,EZ,2,Bee1  
-MP,PRXY,2,Bnu12
-MP,PRYZ,2,Bnu12
-MP,PRXZ,2,Bnu12
-MP,GXY,2,Bg12
-MP,GYZ,2,Bg12
-MP,GXZ,2,Bg12
+MP,EX,1,Aee1        ! 材料2:AL
+MP,EY,1,Aee1  
+MP,EZ,1,Aee1  
+MP,PRXY,1,Anu12
+MP,PRYZ,1,Anu12
+MP,PRXZ,1,Anu12
+MP,GXY,1,Ag12
+MP,GYZ,1,Ag12
+MP,GXZ,1,Ag12
 
-!MP,DENS,2,MITUDO2
 
 !>>>>>材料3>>>>>>>
 ! CFRP
@@ -122,19 +121,19 @@ MP,GXZ,3,Cg23
 !-損傷モデル定義------------------------------------------
 !>>>>>材料2>>>>>>>
 ! concrete
-TB,DMGI,2,,4,1			! 損傷発生の基準則を指定
+TB,DMGI,1,,4,1			! 損傷発生の基準則を指定
 TBDATA,1,2,2,2,2			! 最大応力則の指定
 
-TB,FCLI,2,1,20,1			! 損傷発生の閾値を指定
-TBDATA,1,BsuXYZ,BsuA,BsuXYZ,BsuA,BsuXYZ,BsuA! 応力指定
-TBDATA,7,SendanXYZ_2,SendanXYZ_2,SendanXYZ_2
+TB,FCLI,1,1,20,1			! 損傷発生の閾値を指定
+TBDATA,1,AsuXYZ,AsuA,AsuXYZ,AsuA,AsuXYZ,AsuA! 応力指定
+TBDATA,7,SendanXYZ_1,SendanXYZ_1,SendanXYZ_1
 
-TB,DMGE,2,1,4,1			! 損傷発生時の剛性減少率を指定
+TB,DMGE,1,1,4,1			! 損傷発生時の剛性減少率を指定
 TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
-! TB,BKIN,2,1,2,1
+! TB,BKIN,1,1,2,1
 ! TBTEMP,0
-! TBDATA,,11.2e6,1.8e9,,,,
+! TBDATA,,35.1e6,2e9,,,,
 
 !>>>>>材料3>>>>>>>
 ! CFRP
@@ -276,7 +275,7 @@ CM,CFRP,VOLU
 
 CMSEL,S,UCHI5
 TYPE,1                             !要素1
-MAT,2                             !材料2
+MAT,1                             !材料2
 VSWEEP,ALL
 MOPT,DEFA
 CM,UCHI5,VOLU
@@ -284,7 +283,7 @@ ALLSEL
 
 CMSEL,S,UCHI2
 TYPE,1                             !要素1
-MAT,2                             !材料2
+MAT,1                             !材料2
 VSWEEP,ALL
 MOPT,DEFA
 CM,UCHI2,VOLU
@@ -292,7 +291,7 @@ ALLSEL
 
 CMSEL,S,UCHI3
 TYPE,1                             !要素1
-MAT,2                             !材料2
+MAT,1                             !材料2
 VSWEEP,ALL
 MOPT,DEFA
 CM,UCHI3,VOLU
@@ -300,7 +299,7 @@ ALLSEL
 
 CMSEL,S,UCHI1
 TYPE,1                             !要素1
-MAT,2                             !材料2
+MAT,1                             !材料2
 VSWEEP,ALL
 MOPT,DEFA
 CM,UCHI1,VOLU
@@ -308,7 +307,7 @@ ALLSEL
 
 CMSEL,S,UCHI4
 TYPE,1                             !要素1
-MAT,2                             !材料2
+MAT,1                             !材料2
 VSWEEP,ALL
 MOPT,DEFA
 CM,UCHI4,VOLU

@@ -35,17 +35,12 @@ KEYW,PR_CFD,0
 X1 = 100E-3
 ! Y1	=	25E-3
 Z1 = 5E-3
-Y2 = 12E-3
 Y3 = 14E-3
-Z2 = 3E-3
 Y4 = 1.8E-3 ! CFRPの厚さ
 Z3 = Y4
 
-DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
-DIV2=0.5E-3 !分割数2 CFRP
-DIV3=0.4E-3
-DIV4=0.2E-3
-DIV5=0.2E-3
+DIV1=1.0E-3  !分割数1 エポキシ樹脂・PLA
+DIV2=1.0E-3 !分割数2 CFRP
 
 DISTANCE = 1.5E-3
 TIME1 = 1.5
@@ -54,7 +49,7 @@ TIME1 = 1.5
 !-材料物性定義----------------------------------------------
 !>>>>>材料1>>>>>>>
 ! concrete
-Aee1 = 35E9!全方向弾性率
+Aee1 = 0.32E9!全方向弾性率
 
 Anu12 = 0.2 !全方向ポアソン比
 
@@ -77,11 +72,53 @@ MP,GYZ,1,Ag12
 MP,GXZ,1,Ag12
 
 
+!>>>>>材料3>>>>>>>
+! CFRP
+Cee1 = 54E9!1方向弾性率
+Cee2 = 6E9  !2方向弾性率
+Cee3 = 6E9  !3方向弾性率
+
+Cnu12 = 0.30 !zx,zy方向ポアソン比
+Cnu13 = 0.30 !xz,yz方向ポアソン比
+Cnu23 = 0.35 !xy,yx方向ポアソン比
+
+Cg23 = 9E9 !2-3方向せん断弾性率
+Cg12 = 4E9 !2-3方向せん断弾性率
+
+CsuA = -100E9 !圧縮強度
+CsuX = 500E6 !引張強度(繊維平行方向) 900-1050
+CsuZ = 19E6 !引張強度(繊維垂直方向)
+CsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
+SendanXYZ = 90.4E6 !せん断許容応力
+
+! MITUDO1=  1260  !質量密度
+
+
+
+MP,EX,3,Cee1        ! 材料1:CFRTP
+MP,EY,3,Cee3  
+MP,EZ,3,Cee2 
+
+MP,PRXY,3,Cnu12
+MP,PRYZ,3,Cnu23
+MP,PRXZ,3,Cnu13
+
+! MP,NUXY,3,Cnu12
+! MP,NUYZ,3,Cnu21
+! MP,NUXZ,3,Cnu12
+
+
+MP,GXY,3,Cg23
+MP,GYZ,3,Cg12
+MP,GXZ,3,Cg23
+
+!MP,DENS,1,MITUDO1
+
 
 !-損傷モデル定義------------------------------------------
 
 !>>>>>材料1>>>>>>>
-! concrete
+! PLA
 TB,DMGI,1,,4,1			! 損傷発生の基準則を指定
 TBDATA,1,2,2,2,2			! 最大応力則の指定
 
@@ -96,6 +133,20 @@ TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 ! TBTEMP,0
 ! TBDATA,,35.1e6,2e9,,,,
 
+!>>>>>材料3>>>>>>>
+! CFRP
+TB,DMGI,3,,4,1			! 損傷発生の基準則を指定
+TBDATA,1,2,2,2,2			! 最大応力則の指定
+
+TB,FCLI,3,1,20,1			! 損傷発生の閾値を指定
+TBDATA,1,CsuX,CsuA,CsuY,CsuA,CsuZ,CsuA! 応力指定
+TBDATA,7,SendanXYZ,SendanXYZ,SendanXYZ
+
+TB,DMGE,3,1,4,1			! 損傷発生時の剛性減少率を指定
+TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
+
+
+
 
 !-キーポイント定義------------------------------------------
 K	,	1	,	0	,	0	,	0
@@ -106,31 +157,68 @@ K	,	5	,	0	,	0	,	Z1
 K	,	6	,	0	,	Y3	,	Z1
 K	,	7	,	X1	,	Y3	,	Z1
 K	,	8	,	X1	,	0	,	Z1
+! CFRP
+K       ,      9       ,       0       ,    (Y3-Y4)/2  ,       (Z1-Z3)/2
+K       ,      10       ,       0       ,  (Y3-Y4)/2+Y4 ,       (Z1-Z3)/2
+K       ,      11       ,       X1      ,  (Y3-Y4)/2+Y4 ,       (Z1-Z3)/2
+K       ,      12       ,       X1      ,  (Y3-Y4)/2    ,       (Z1-Z3)/2
+K       ,      13       ,       0       ,    (Y3-Y4)/2  ,       (Z1-Z3)/2+Z3
+K       ,      14       ,       0       , (Y3-Y4)/2+Y4  ,       (Z1-Z3)/2+Z3
+K       ,      15       ,       X1      ,  (Y3-Y4)/2+Y4 ,       (Z1-Z3)/2+Z3
+K       ,      16       ,       X1      ,  (Y3-Y4)/2    ,       (Z1-Z3)/2+Z3
 
+ 
 !-ヴォリューム構築------------------------------------------------------
 
 !---試験片--------------------------------------------
-! PLA部分
+! concrete部分
 V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
 ALLSEL
 CM,SOTO,VOLU
 
+! CFRP部分
+V	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,	16
+CMSEL,U,SOTO
+CM,CFRP,VOLU
+ALLSEL
+VOVLAP,ALL !重なり部分を削除
+ALLSEL
+CMSEL,U,CFRP
+CM,SOTO,VOLU
+
 !-メッシュ分割--------------------------------------------------
 
+CMSEL,S,CFRP
+AESIZE,ALL,DIV2
+
 ALLSEL
-AESIZE,ALL,DIV1
 
-
-!-試験片外側メッシュ--------------------------------------------
-
+!-試験片CFRPメッシュ--------------------------------------------
+CMSEL,S,CFRP
 TYPE,1                             !要素1
-MAT,1                             !材料1
+MAT,3                             !材料2
 MSHAPE,0,3D
 MSHKEY,1
 VMESH,ALL
 MOPT,DEFA
 ! VSWEEP,ALL
 ! MOPT,DEFA
+CM,CFRP,VOLU
+
+
+!-試験片外側メッシュ--------------------------------------------
+ALLSEL
+AESIZE,ALL,DIV1
+
+ALLSEL
+CMSEL,S,SOTO
+TYPE,1                             !要素1
+MAT,1                             !材料1
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
+VSWEEP,ALL
+MOPT,DEFA
 CM,SOTO,VOLU
 ALLSEL
 
@@ -165,6 +253,7 @@ ALLSEL !節点全選択
 FINISH  
 /POST1
 
+  
 FINISH  
 /SOLU
 

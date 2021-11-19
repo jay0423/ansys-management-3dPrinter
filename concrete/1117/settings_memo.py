@@ -37,7 +37,7 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    'concrete\\1117\\cfrp2\\': [
+    'concrete\\1117\\': [
         ('lap', [10, 20, 30]),
     ],
 }

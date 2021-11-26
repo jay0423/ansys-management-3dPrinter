@@ -3,7 +3,7 @@
 /POST1  
 SET,LAST
 
-WPLANE, 1, 0, 0, Z1/2, X1, 0, Z1/2, 0, Y3, Z1/2
+WPLANE, 1, 0, 0, Z1/2, X1, 0, Z1/2, 0, P_y, Z1/2
 /CPLANE, 1
 /TYPE,1,7
 

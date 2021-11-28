@@ -34,9 +34,9 @@ E_y = 12E-3 !エポキシ部の長さ
 P_y = 14E-3 !PLA横の長さ
 E_z = 3E-3 !エポキシ部の厚さ
 
-CF_lap = 20E-3 ! CFRPの重ね継ぎ手長さ
+CF_lap = {% lap %}E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_y = 1.8E-3 !CFRPの厚さ
+CF_y = {% thickness %}E-3 !CFRPの厚さ
 CF_z = CF_y !CFRPの横長さ(正方形)
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_z !CFRP1の初期位置

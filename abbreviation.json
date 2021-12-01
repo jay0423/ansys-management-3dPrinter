@@ -1,0 +1,40 @@
+{
+    "ABBREVIATION": {
+        "cfrp0": "c0",
+        "cfrp1": "c1",
+        "cfrp2": "c2",
+        "lap": "l",
+        "cfrp2_lap": "c2_l",
+        "thickness": "th",
+        "gap": "g",
+        "div": "d",
+        "kasa": "kasa",
+        "time_distance": "t",
+        "correction": "cor",
+        "length": "len",
+        "solid185": "s185",
+        "solid186": "s186",
+        "epo_tensile": "epot",
+        "super": "sup",
+        "cfrp": "cfrp",
+        "epoxy": "epo",
+        "pla": "pla",
+        "cf_tensile": "cft",
+        "sita": "sita",
+        "sendan_epo": "sene",
+        "hoso_rate": "hr",
+        "ch_dis": "chd",
+        "cf_top_rate": "ctr",
+        "cf_small_rate": "csr"
+    },
+    "DEFAOLUT_REPLACE_WORD_DICT": {
+        "cfrp2_lap": "20",
+        "thickness": "1.8",
+        "gap": "1.0",
+        "div": "1.0",
+        "length": "100",
+        "solid185": "185",
+        "solid186": "186",
+        "cf_tensile": "500"
+    }
+}

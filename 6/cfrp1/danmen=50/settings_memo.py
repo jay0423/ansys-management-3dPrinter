@@ -37,8 +37,8 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    '6/cfrp1/danmen=50/': [
-        ('cf_tensile', [700, 800, 900, 970, 1000]),
+    '6\\cfrp1\\danmen=50\\': [
+        ('cf_tensile', [700, 800, 900, 970]),
     ],
 }
 
@@ -174,13 +174,13 @@ WRITE_EXTENSION = "ansys"
 ### auto_analysis
 # 実行ディレクトリパス
 # PY_DIR_PATH = "C:\\Users\\matlab\\Documents\\ansys\\ansys-management-3dPrinter\\" # 藤井windowsPC
-# PY_DIR_PATH = "C:\\Users\\matlab\\Documents\\ansys-management-3dPrinter\\" # 梶本windowsPC
-PY_DIR_PATH = "/Users/jay0423/Documents/GitHub/ansys-management-3dPrinter/" # 梶本macPC
+PY_DIR_PATH = "C:\\Users\\user\\Documents\\kajimoto\\ansys-management-3dPrinter\\" # 梶本windowsPC
+# PY_DIR_PATH = "/Users/jay0423/Documents/GitHub/ansys-management-3dPrinter/" # 梶本macPC
 
 
 # ansysデータの保存先のディレクトリ(windows)のパス
 # CWD_PATH = "C:\\Users\\matlab\\Documents\\ansys\\ansys_fujii\\" # 藤井windowsPC
-CWD_PATH = "C:\\Users\\matlab\\ansys_kajimoto\\" # 梶本windowsPC
+CWD_PATH = "D:\\kajimoto_Ansys\\" # 梶本windowsPC
 
 
 # TEMPのパス

@@ -26,7 +26,8 @@
         "hoso_rate": "hr",
         "ch_dis": "chd",
         "cf_top_rate": "ctr",
-        "cf_small_rate": "csr"
+        "cf_small_rate": "csr",
+        "epo_young": "ey"
     },
     "DEFAOLUT_REPLACE_WORD_DICT": {
         "cfrp2_lap": "20",

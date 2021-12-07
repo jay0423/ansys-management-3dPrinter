@@ -37,7 +37,7 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    '6/test=2/': [
+    '6/test=3/': [
         ('pla_young', [1.0, 1.95, 2.78, 3.9]),
         ('pla_tensile', [37, 43.4, 74]),
     ],

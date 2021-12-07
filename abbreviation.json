@@ -16,6 +16,7 @@
         "solid185": "s185",
         "solid186": "s186",
         "epo_tensile": "epot",
+        "pla_tensile": "plat",
         "super": "sup",
         "cfrp": "cfrp",
         "epoxy": "epo",

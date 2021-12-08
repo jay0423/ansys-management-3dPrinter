@@ -41,7 +41,7 @@ E_z = 3E-3 ! Epoxyのz幅
 
 CF_lap = 20E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 ! CFRP1本あたりの長さ
-CF_y = 1.58E-3 ! CFRPの高さ
+CF_y = {% thickness %}E-3 ! CFRPの高さ
 CF_z = CF_y ! CFRPの幅
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_z !CFRP1の初期位置
@@ -339,6 +339,24 @@ K       ,      61       ,       -K25_x+2*Cx    ,    -K25_y+2*Cy  ,    K21_z
 K       ,      62       ,       -K26_x+2*Cx    ,    -K26_y+2*Cy  ,    K21_z
 K       ,      63       ,       -K27_x+2*Cx    ,    -K27_y+2*Cy  ,    K29_z
 K       ,      64       ,       -K28_x+2*Cx    ,    -K28_y+2*Cy  ,    K29_z
+! CFRPの傘部分2
+K       ,      65       ,       -K33_x+2*Cx    ,    -K33_y+2*Cy  ,    K17_z
+K       ,      66       ,       -K34_x+2*Cx    ,    -K34_y+2*Cy  ,    K17_z
+K       ,      67       ,       -K35_x+2*Cx    ,    -K35_y+2*Cy  ,    K17_z
+K       ,      68       ,       -K36_x+2*Cx    ,    -K36_y+2*Cy  ,    K17_z
+K       ,      69       ,       -K33_x+2*Cx    ,    -K33_y+2*Cy  ,    K21_z
+K       ,      70       ,       -K34_x+2*Cx    ,    -K34_y+2*Cy  ,    K21_z
+K       ,      71       ,       -K35_x+2*Cx    ,    -K35_y+2*Cy  ,    K21_z
+K       ,      72       ,       -K36_x+2*Cx    ,    -K36_y+2*Cy  ,    K21_z
+
+K       ,      73       ,       -K41_x+2*Cx    ,    -K41_y+2*Cy  ,    K17_z
+K       ,      74       ,       -K42_x+2*Cx    ,    -K42_y+2*Cy  ,    K17_z
+K       ,      75       ,       -K43_x+2*Cx    ,    -K43_y+2*Cy  ,    K17_z
+K       ,      76       ,       -K44_x+2*Cx    ,    -K44_y+2*Cy  ,    K17_z
+K       ,      77       ,       -K41_x+2*Cx    ,    -K41_y+2*Cy  ,    K21_z
+K       ,      78       ,       -K42_x+2*Cx    ,    -K42_y+2*Cy  ,    K21_z
+K       ,      79       ,       -K43_x+2*Cx    ,    -K43_y+2*Cy  ,    K21_z
+K       ,      80       ,       -K44_x+2*Cx    ,    -K44_y+2*Cy  ,    K21_z
 
 !-ヴォリューム構築------------------------------------------------------
 
@@ -363,19 +381,22 @@ V	,	41	,	42	,	43	,	44	,	45	,	46	,	47	,	48
 ! CFRP2本目
 V	,	49	,	50	,	51	,	52	,	53	,	54	,	55	,	56
 V	,	57	,	58	,	59	,	60	,	61	,	62	,	63	,	64
+V	,	65	,	66	,	67	,	68	,	69	,	70	,	71	,	72
+V	,	73	,	74	,	75	,	76	,	77	,	78	,	79	,	80
 
 
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
 
-VSEL,S,VOLU,,5,6
+VSEL,S,VOLU,,5,7
 CM,CFRP_K1,VOLU
-VSEL,S,VOLU,,11,11
-VSEL,A,VOLU,,9,9
+VSEL,S,VOLU,,12,13
 CM,CFRP1,VOLU
 
-VSEL,S,VOLU,,7,7
-VSEL,A,VOLU,,10,10
+VSEL,S,VOLU,,9, 10
+CM,CFRP_K2,VOLU
+VSEL,S,VOLU,,11,11
+VSEL,A,VOLU,,14,14
 CM,CFRP2,VOLU
 
 ALLSEL
@@ -383,6 +404,7 @@ CMSEL,U,SOTO
 CMSEL,U,CFRP1
 CMSEL,U,CFRP2
 CMSEL,U,CFRP_K1
+CMSEL,U,CFRP_K2
 CM,UCHI,VOLU
 
 
@@ -420,6 +442,14 @@ MOPT,DEFA
 CM,CFRP1,VOLU
 
 
+CMSEL,S,CFRP_K2
+TYPE,1                             !要素1
+MAT,3                             !材料2
+MSHAPE,0,3D
+MSHKEY,1
+VMESH,ALL
+MOPT,DEFA
+CM,CFRP_K2,VOLU
 ! CFRP2真ん中
 CMSEL,S,CFRP2
 TYPE,1                             !要素1

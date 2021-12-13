@@ -37,9 +37,10 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    '7\\epo_young\\': [
-        ('epo_young', [0.4, 0.6, 0.9, 1.2]),
-        ('epo_tensile', [20, 40, 60, 80]),
+    '7\\mechanism\\': [
+        ('pla_young', [1.39, 2.78]),
+        ('epo_young', [0.4, 0.9, 1.5]),
+        ('epo_hizumi', [0.02, 0.04, 0.1]),
     ],
 }
 

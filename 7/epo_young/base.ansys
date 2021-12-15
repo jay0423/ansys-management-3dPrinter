@@ -36,7 +36,7 @@ E_z = 3E-3 !エポキシ部の厚さ
 
 CF_lap = 20E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_y = {% thickness %}E-3 !CFRPの厚さ
+CF_y = 1.41E-3 !CFRPの厚さ
 CF_z = CF_y !CFRPの横長さ(正方形)
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_z !CFRP1の初期位置
@@ -93,7 +93,7 @@ Bnu12 = 0.39 !全方向ポアソン比
 Bg12 = 0.05E9   !全方向せん断弾性率
 
 BsuA = -100E6 !圧縮強度
-BsuXYZ = {% eop_tensile %}E6 !引張強度
+BsuXYZ = {% epo_tensile %}E6 !引張強度
 SendanXYZ_2= 20E6 !せん断許容応力
 
 !MITUDO2= 2790   !質量密度

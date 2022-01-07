@@ -39,8 +39,8 @@ DIR_STRUCTURE = {
 DIR_STRUCTURE = {
     '8/cfrp2=1.4/': [
         ('lap', [20, 30]),
-        ('thickness', [0.75, 1.0, 1.2, 1.41, 1.58]),
-    ]
+        ('thickness', [0.75,1.0,1.2,1.41,1.58]),
+    ],
 }
 
 
@@ -57,7 +57,6 @@ ANALYSIS_PATH = [
 ]
 """
 ANALYSIS_PATH = [
-    "8/kasa=1.4/"
 ]
 
 

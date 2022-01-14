@@ -1,3 +1,7 @@
+﻿! CFRPを１本のみ埋め込んだ試験片
+
+
+!/input,c:\ansys\test-line,txt
 finish
 /clear,start
 /NOPR
@@ -28,30 +32,17 @@ KEYW,PR_CFD,0
 /GO 
 
 !-パラメータ定義--------------------------------------------
-X1 = 80E-3 !試験片長さ
-Z1 = 5E-3 !PLA厚さ
-E_y = 12E-3 !エポキシ部の長さ
-P_y = 14E-3 !PLA横の長さ
-E_z = 3E-3 !エポキシ部の厚さ
+X1 = 80E-3
+! Y1	=	25E-3
+Z1 = 5E-3
+E_y = 12E-3
+P_y = 14E-3
+E_z = 3E-3
+Y4 = 0.8E-3 ! CFRPの厚さ
+CF_y = Y4
 
-CF_lap = 25E-3 ! CFRPの重ね継ぎ手長さ
-CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_y = {% thickness %}E-3 !CFRPの厚さ
-CF_z = CF_y !CFRPの横長さ(正方形)
-CF_gap = 1.0E-3 ! CFRP間の距離
-Y4 = P_y/2 - CF_gap/2 - CF_z !CFRP1の初期位置
-Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置
-
-R_cf_small = 0 ! cfrpが細い部分のラップ長さの比率
-X_cf_small_fir = CF_len - (R_cf_small / (1 / CF_lap))
-
-! 倒れたCFRPの角度
-alpha_CF_pla = 0.5E-3 ! 倒れたCFRPとPLA間の距離．補正用．CFRPが倒れているとき，PLAとCFRPがくっ付いてはいけないため
-CF_sita = -ASIN((Y4-(P_y-E_y)/2 - alpha_CF_pla)/(CF_len)) ! CFRPが倒れた時の角度．負の角度
-
-
-DIV1=2.0E-3  !分割数1
-DIV2=0.8E-3 !分割数2
+DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
+DIV2=0.8E-3 !分割数2 CFRP
 
 DISTANCE = 2E-3
 TIME1 = 2
@@ -127,9 +118,9 @@ Cg23 = 0.9E9 !2-3方向せん断弾性率
 Cg12 = 4E9 !2-3方向せん断弾性率
 
 CsuA = -100E9 !圧縮強度
-CsuX = 965E6 !引張強度(繊維平行方向)
+CsuX = 965E6 !引張強度(繊維平行方向) 900-1050
 CsuZ = 19E6 !引張強度(繊維垂直方向)
-CsuY = CsuZ !引張強度(繊維垂直レイアップ方向)
+CsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
 SendanXYZ = 90.4E6 !せん断許容応力
 
 ! MITUDO1=  1260  !質量密度
@@ -204,8 +195,8 @@ TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
 
 
+
 !-キーポイント定義------------------------------------------
-! PLA
 K	,	1	,	0	,	0	,	0
 K	,	2	,	0	,	P_y	,	0
 K	,	3	,	X1	,	P_y	,	0
@@ -214,8 +205,6 @@ K	,	5	,	0	,	0	,	Z1
 K	,	6	,	0	,	P_y	,	Z1
 K	,	7	,	X1	,	P_y	,	Z1
 K	,	8	,	X1	,	0	,	Z1
-
-! エポキシ樹脂
 K       ,       9       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2
 K       ,      10       ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
 K       ,      11       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
@@ -224,150 +213,106 @@ K       ,      13       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2+E_z
 K       ,      14       ,       0       , (P_y-E_y)/2+E_y  ,       (Z1-E_z)/2+E_z
 K       ,      15       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2+E_z
 K       ,      16       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2+E_z
+! CFRP
+K       ,      17       ,       0       ,    (P_y-Y4)/2  ,       (Z1-CF_y)/2
+K       ,      18       ,       0       ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2
+K       ,      19       ,       X1      ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2
+K       ,      20       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2
+K       ,      21       ,       0       ,    (P_y-Y4)/2  ,       (Z1-CF_y)/2+CF_y
+K       ,      22       ,       0       , (P_y-Y4)/2+Y4  ,       (Z1-CF_y)/2+CF_y
+K       ,      23       ,       X1      ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2+CF_y
+K       ,      24       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2+CF_y
 
-! CFRP1本目
-! 座標の回転
-Cx = 0
-Cy = Y4
-! X = (x - Cx)cos(sita) - (y - Cy)sin(sita) + Cx
-! Y = (x - Cx)sin(sita) + (y - Cy)cos(sita) + Cy
-
-K17_x = 0
-K17_y = Y4
-K17_z = (Z1-CF_z)/2
-K       ,      17       ,       K17_x       ,  K17_y  ,    K17_z
-x_origin = 0
-y_origin = Y4+CF_y
-K18_x = 0
-K18_y = (x_origin - Cx)*sin(CF_sita) + (y_origin - Cy)*cos(CF_sita) + Cy
-K       ,      18       ,       K18_x       ,  K18_y ,       K17_z
-x_origin = X_cf_small_fir
-y_origin = Y4+CF_y
-K19_x = (x_origin - Cx)*cos(CF_sita) - (y_origin - Cy)*sin(CF_sita) + Cx
-K19_y = (x_origin - Cx)*sin(CF_sita) + (y_origin - Cy)*cos(CF_sita) + Cy
-K       ,      19       ,       K19_x    ,  K19_y ,       K17_z
-x_origin = X_cf_small_fir
-y_origin = Y4
-K20_x = (x_origin - Cx)*cos(CF_sita) - (y_origin - Cy)*sin(CF_sita) + Cx
-K20_y = (x_origin - Cx)*sin(CF_sita) + (y_origin - Cy)*cos(CF_sita) + Cy
-K       ,      20       ,       K20_x    ,  K20_y    ,       K17_z
-K21_z = (Z1+CF_z)/2
-K       ,      21       ,       K17_x       ,  K17_y  ,    K21_z
-K       ,      22       ,       K18_x       ,  K18_y ,       K21_z
-K       ,      23       ,       K19_x    ,  K19_y    ,       K21_z
-K       ,      24       ,       K20_x    ,  K20_y    ,       K21_z
-
-! CFRP2
-! 180°回転させたときの座標の計算 x:元の座標 Cx:回転の中心座標
-! 傘部分の座標は座標の回転の式によって決める．
-! X = -x + 2Cx
-! Y = -y + 2Cx
-Cx = X1/2
-Cy = P_y/2
-! CFRP2本目
-K       ,      33       ,       -K17_x+2*Cx    ,    -K17_y+2*Cy  ,    K17_z
-K       ,      34       ,       -K18_x+2*Cx    ,    -K18_y+2*Cy  ,    K17_z
-K       ,      35       ,       -K19_x+2*Cx    ,    -K19_y+2*Cy  ,    K17_z
-K       ,      36       ,       -K20_x+2*Cx    ,    -K20_y+2*Cy  ,    K17_z
-K       ,      37       ,       -K17_x+2*Cx    ,    -K17_y+2*Cy  ,    K21_z
-K       ,      38       ,       -K18_x+2*Cx    ,    -K18_y+2*Cy  ,    K21_z
-K       ,      39       ,       -K19_x+2*Cx    ,    -K19_y+2*Cy  ,    K21_z
-K       ,      40       ,       -K20_x+2*Cx    ,    -K20_y+2*Cy  ,    K21_z
-! ! CFRP細い部分
-! K       ,      41       ,       -K25_x+2*Cx    ,    -K25_y+2*Cy  ,    K17_z
-! K       ,      42       ,       -K26_x+2*Cx    ,    -K26_y+2*Cy  ,    K17_z
-! K       ,      43       ,       -K27_x+2*Cx    ,    -K27_y+2*Cy  ,    K27_z
-! K       ,      44       ,       -K28_x+2*Cx    ,    -K28_y+2*Cy  ,    K27_z
-! K       ,      45       ,       -K25_x+2*Cx    ,    -K25_y+2*Cy  ,    K21_z
-! K       ,      46       ,       -K26_x+2*Cx    ,    -K26_y+2*Cy  ,    K21_z
-! K       ,      47       ,       -K27_x+2*Cx    ,    -K27_y+2*Cy  ,    K29_z
-! K       ,      48       ,       -K28_x+2*Cx    ,    -K28_y+2*Cy  ,    K29_z
-
-
+ 
 !-ヴォリューム構築------------------------------------------------------
 
 !---試験片--------------------------------------------
 ! PLA部分
 V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
+ALLSEL
+CM,SOTO,VOLU
 ! エポキシ樹脂部分
 V	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,	16
-
-ALLSEL
-VOVLAP,ALL !重なり部分を削除
-
-VSEL,S,VOLU,,3,3 ! PLA
-CM,SOTO,VOLU
-ALLSEL
-
-! CFRP1部分
-V	,	17	,	18	,	19	,	20	,	21	,	22	,	23	,	24
-! V	,	25	,	26	,	27	,	28	,	29	,	30	,	31	,	32
-! CFRP2部分
-V	,	33	,	34	,	35	,	36	,	37	,	38	,	39	,	40
-! V	,	41	,	42	,	43	,	44	,	45	,	46	,	47	,	48
-
-ALLSEL
-VOVLAP,ALL !重なり部分を削除
-
-VSEL,S,VOLU,,1,1
-! VSEL,A,VOLU,,7,7
-CM,CFRP1,VOLU
-
-VSEL,S,VOLU,,4,4
-! VSEL,A,VOLU,,8,8
-CM,CFRP2,VOLU
-
 ALLSEL
 CMSEL,U,SOTO
-CMSEL,U,CFRP1
-CMSEL,U,CFRP2
+CM,UCHI,VOLU
+ALLSEL
+VOVLAP,ALL !重なり部分を削除
+ALLSEL
+CMSEL,U,UCHI
+CM,SOTO,VOLU
+
+! CFRP部分
+V	,	17	,	18	,	19	,	20	,	21	,	22	,	23	,	24
+CMSEL,U,SOTO
+CM,CFRP,VOLU
+ALLSEL
+VOVLAP,ALL !重なり部分を削除
+ALLSEL
+CMSEL,U,SOTO
+CMSEL,U,CFRP
 CM,UCHI,VOLU
 
 
-ALLSEL
-VGLUE,ALL
+! ALLSEL
+! CM,SPECIMEN,VOLU
+! VOVLAP,SPECIMEN !重なった部分のヴォリューム作成
+
+! CMSEL,U,CFRP
+! VSEL,R,LOC,Z,(Z1-E_z)/2,(Z1-E_z)/2+E_z
+! VSEL,R,LOC,Y,(P_y-E_y)/2,(P_y-E_y)/2+E_y
+
+! VSEL,S,LOC,X,0,Y4
+! VSEL,S,LOC,Y,0,P_y-E_y
+! VSEL,S,VOLU,,9,16
+
+! VSEL,S,LOC,X,0,X1
+
+! ALLSEL
+! VGLUE,ALL
+
+! !-CF部のローカル座標定義--------------------------------------------------
+
+! LOCAL,11,0,0,0,0,0,0,90
+! CSYS,0
+
+! !-CF部の繊維方向定義--------------------------------------------------
+! !>>>>1層目>>>>>>>>>>>>
+! CMSEL,S,CFRP
+! VATT,3,,1,11
 
 !-メッシュ分割--------------------------------------------------
 
-! CMSEL,S,CFRP
-ALLSEL
+! ALLSEL
+! ! CMSEL,U,CFRP
+! AESIZE,ALL,DIV1
+
+CMSEL,S,CFRP
 AESIZE,ALL,DIV2
 
 ALLSEL
 
 !-試験片CFRPメッシュ--------------------------------------------
-! CFRP1真ん中
-CMSEL,S,CFRP1
+CMSEL,S,CFRP
 TYPE,1                             !要素1
 MAT,3                             !材料2
-! VSWEEP,ALL
 MSHAPE,0,3D
 MSHKEY,1
 VMESH,ALL
 MOPT,DEFA
-CM,CFRP1,ELEM
+! VSWEEP,ALL
+! MOPT,DEFA
+CM,CFRP,VOLU
 
-! CFRP2真ん中
-CMSEL,S,CFRP2
-TYPE,1                             !要素1
-MAT,3                             !材料2
-! VSWEEP,ALL
-MSHAPE,0,3D
-MSHKEY,1
-VMESH,ALL
-MOPT,DEFA
-CMSEL,U,CFRP1
-CM,CFRP2,ELEM
 
 !-試験片内側メッシュ--------------------------------------------
-
 CMSEL,S,UCHI
 TYPE,1                             !要素1
 MAT,2                             !材料2
-MSHAPE,1,3D
-MSHKEY,0
-VMESH,ALL
-! VSWEEP,ALL
+! MSHAPE,1,3D
+! MSHKEY,0
+! VMESH,ALL
+VSWEEP,ALL
 MOPT,DEFA
 CM,UCHI,VOLU
 
@@ -375,46 +320,20 @@ CM,UCHI,VOLU
 ALLSEL
 AESIZE,ALL,DIV1
 
-CMSEL,S,SOTO
+ALLSEL
+CMSEL,U,UCHI
+CMSEL,U,CFRP
 TYPE,1                             !要素1
 MAT,1                             !材料1
-MSHAPE,1,3D
-MSHKEY,0
-VMESH,ALL
-! VSWEEP,ALL
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
+VSWEEP,ALL
 MOPT,DEFA
 CM,SOTO,VOLU
 ALLSEL
 
-!-CF部の繊維方向定義--------------------------------------------------
 
-CMSEL,S,CFRP1
-*GET, MINELEM, ELEM, 0, NUM, MIN
-*GET, MAXELEM, ELEM, 0, NUM, MAX
-
-*DO, I, MINELEM, MAXELEM, 1   !ループ
-
-LOCAL, 100+I,CART,0,0,0,CF_sita,0,0
-EMODIF, I, ESYS, 100+I,
-
-ALLSEL
-CSYS,0
-
-*ENDDO
-
-
-CMSEL,S,CFRP2
-*GET, MINELEM, ELEM, 0, NUM, MIN
-*GET, MAXELEM, ELEM, 0, NUM, MAX
-
-*DO, I, MINELEM, MAXELEM, 1   !ループ
-
-LOCAL, 100+I,CART,0,0,0,CF_sita,0,0
-EMODIF, I, ESYS, 100+I,
-
-ALLSEL
-CSYS,0
-*ENDDO
 
 !-境界条件指定--------------------------------------------------
 ALLSEL
@@ -431,8 +350,6 @@ D,ALL,UY,0
 
 ASEL,S,LOC,X,X1 !荷重負荷面カップリング
 NSLA,S,1
-! D,ALL,UZ,0
-! D,ALL,UY,0
 CP,NEXT,UX,ALL
 
 *GET,NNUM,NODE,,NUM,MIN !最小の節点選択
@@ -447,7 +364,7 @@ ALLSEL !節点全選択
 FINISH  
 /POST1
 
-
+  
 FINISH  
 /SOLU
 

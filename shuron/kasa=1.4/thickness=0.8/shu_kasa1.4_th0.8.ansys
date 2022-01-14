@@ -39,9 +39,9 @@ P_y = 14E-3 ! PLAのy幅
 E_y = 12E-3 ! Epoxyのy幅
 E_z = 3E-3 ! Epoxyのz幅
 
-CF_lap = {% lap %}E-3 ! CFRPの重ね継ぎ手長さ
+CF_lap = 25E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 ! CFRP1本あたりの長さ
-CF_y = {% thickness %}E-3 ! CFRPの高さ
+CF_y = 0.8E-3 ! CFRPの高さ
 CF_z = CF_y ! CFRPの幅
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_z !CFRP1の初期位置
@@ -54,7 +54,7 @@ X_cf_small_fir = CF_len - (R_cf_small / (1 / CF_lap))
 K_sita_do = 15 !角度
 K_sita = K_sita_do / (1/3.141592) / 180
 K_x = ((P_y-CF_y)/2 - (P_y-E_y)/2) / TAN(K_sita) ! CFRP傘部分長さ
-K_h = 0.8E-3 ! CFRPの傘の幅
+K_h = 0.1E-3 ! CFRPの傘の幅
 K_a = K_h/SIN(K_sita) !CFRP傘の角度θの幅
 K_b = K_h/COS(K_sita) !CFRP傘の角度θの幅2
 
@@ -340,6 +340,7 @@ K       ,      62       ,       -K26_x+2*Cx    ,    -K26_y+2*Cy  ,    K21_z
 K       ,      63       ,       -K27_x+2*Cx    ,    -K27_y+2*Cy  ,    K29_z
 K       ,      64       ,       -K28_x+2*Cx    ,    -K28_y+2*Cy  ,    K29_z
 
+
 !-ヴォリューム構築------------------------------------------------------
 
 !---試験片--------------------------------------------
@@ -368,8 +369,11 @@ V	,	57	,	58	,	59	,	60	,	61	,	62	,	63	,	64
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
 
-VSEL,S,VOLU,,5,6
+VSEL,S,VOLU,,5,5
 CM,CFRP_K1,VOLU
+VSEL,S,VOLU,,6,6
+CM,CFRP_K2,VOLU
+
 VSEL,S,VOLU,,11,11
 VSEL,A,VOLU,,9,9
 CM,CFRP1,VOLU
@@ -406,7 +410,17 @@ MSHAPE,0,3D
 MSHKEY,1
 VMESH,ALL
 MOPT,DEFA
-CM,CFRP_K1,VOLU
+CM,CFRP_K1,ELEM
+
+CMSEL,S,CFRP_K2
+TYPE,1                             !要素1
+MAT,3                             !材料2
+MSHAPE,0,3D
+MSHKEY,1
+VMESH,ALL
+MOPT,DEFA
+CMSEL,U,CFRP_K1
+CM,CFRP_K2,ELEM
 
 ! CFRP1真ん中
 CMSEL,S,CFRP1
@@ -418,6 +432,7 @@ MSHKEY,O
 VMESH,ALL
 MOPT,DEFA
 CM,CFRP1,VOLU
+
 
 
 ! CFRP2真ん中
@@ -459,6 +474,41 @@ MOPT,DEFA
 CM,SOTO,VOLU
 ALLSEL
 
+!-CF部の繊維方向定義--------------------------------------------------
+
+CMSEL,S,CFRP_K1
+*GET, MINELEM, ELEM, 0, NUM, MIN
+*GET, MAXELEM, ELEM, 0, NUM, MAX
+
+*DO, I, MINELEM, MAXELEM, 1   !ループ
+
+*GET, ELEM_Y, ELEM, I,CENT, Y
+*IF, ELEM_Y, GT, K17_y-0.5E-3, CYCLE
+
+LOCAL, 100+I,CART,0,0,0,-K_sita_do,0,0
+EMODIF, I, ESYS, 100+I,
+
+ALLSEL
+CSYS,0
+
+*ENDDO
+
+
+CMSEL,S,CFRP_K2
+*GET, MINELEM, ELEM, 0, NUM, MIN
+*GET, MAXELEM, ELEM, 0, NUM, MAX
+
+*DO, I, MINELEM, MAXELEM, 1   !ループ
+
+*GET, ELEM_Y, ELEM, I,CENT, Y
+*IF, ELEM_Y, LT, K18_y+0.5E-3, CYCLE
+
+LOCAL, 100+I,CART,0,0,0,K_sita_do,0,0
+EMODIF, I, ESYS, 100+I,
+
+ALLSEL
+CSYS,0
+*ENDDO
 
 !-境界条件指定--------------------------------------------------
 ALLSEL

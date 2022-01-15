@@ -36,7 +36,7 @@ E_z = 3E-3 !エポキシ部の厚さ
 
 CF_lap = 25E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_y = 0.8E-3 !CFRPの厚さ
+CF_y = 0.6E-3 !CFRPの厚さ
 CF_z = CF_y !CFRPの横長さ(正方形)
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_z !CFRP1の初期位置
@@ -206,6 +206,7 @@ TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
 !-キーポイント定義------------------------------------------
 ! PLA
+K,50,-CF_sita*57.3*0.01,0,0
 K	,	1	,	0	,	0	,	0
 K	,	2	,	0	,	P_y	,	0
 K	,	3	,	X1	,	P_y	,	0
@@ -214,7 +215,6 @@ K	,	5	,	0	,	0	,	Z1
 K	,	6	,	0	,	P_y	,	Z1
 K	,	7	,	X1	,	P_y	,	Z1
 K	,	8	,	X1	,	0	,	Z1
-
 ! エポキシ樹脂
 K       ,       9       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2
 K       ,      10       ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
@@ -265,14 +265,16 @@ K       ,      24       ,       K20_x    ,  K20_y    ,       K21_z
 Cx = X1/2
 Cy = P_y/2
 ! CFRP2本目
-K       ,      33       ,       -K17_x+2*Cx    ,    -K17_y+2*Cy  ,    K17_z
-K       ,      34       ,       -K18_x+2*Cx    ,    -K18_y+2*Cy  ,    K17_z
-K       ,      35       ,       -K19_x+2*Cx    ,    -K19_y+2*Cy  ,    K17_z
-K       ,      36       ,       -K20_x+2*Cx    ,    -K20_y+2*Cy  ,    K17_z
-K       ,      37       ,       -K17_x+2*Cx    ,    -K17_y+2*Cy  ,    K21_z
-K       ,      38       ,       -K18_x+2*Cx    ,    -K18_y+2*Cy  ,    K21_z
-K       ,      39       ,       -K19_x+2*Cx    ,    -K19_y+2*Cy  ,    K21_z
-K       ,      40       ,       -K20_x+2*Cx    ,    -K20_y+2*Cy  ,    K21_z
+mmm = -K19_y+2*Cy-Y5 ! 平行移動量
+Y_sen = ((-K19_y+2*Cy)+(-K20_y+2*Cy))/2-mmm ! 線対象の基準となる線のy座標
+K       ,      33       ,       -K17_x+2*Cx    ,    2*Y_sen-(-K17_y+2*Cy-mmm)  ,    K17_z
+K       ,      34       ,       -K18_x+2*Cx    ,    2*Y_sen-(-K18_y+2*Cy-mmm)  ,    K17_z
+K       ,      35       ,       -K19_x+2*Cx    ,    2*Y_sen-(-K19_y+2*Cy-mmm)  ,    K17_z
+K       ,      36       ,       -K20_x+2*Cx    ,    2*Y_sen-(-K20_y+2*Cy-mmm)  ,    K17_z
+K       ,      37       ,       -K17_x+2*Cx    ,    2*Y_sen-(-K17_y+2*Cy-mmm)  ,    K21_z
+K       ,      38       ,       -K18_x+2*Cx    ,    2*Y_sen-(-K18_y+2*Cy-mmm)  ,    K21_z
+K       ,      39       ,       -K19_x+2*Cx    ,    2*Y_sen-(-K19_y+2*Cy-mmm)  ,    K21_z
+K       ,      40       ,       -K20_x+2*Cx    ,    2*Y_sen-(-K20_y+2*Cy-mmm)  ,    K21_z
 ! ! CFRP細い部分
 ! K       ,      41       ,       -K25_x+2*Cx    ,    -K25_y+2*Cy  ,    K17_z
 ! K       ,      42       ,       -K26_x+2*Cx    ,    -K26_y+2*Cy  ,    K17_z
@@ -394,7 +396,7 @@ CMSEL,S,CFRP1
 
 *DO, I, MINELEM, MAXELEM, 1   !ループ
 
-LOCAL, 100+I,CART,0,0,0,CF_sita,0,0
+LOCAL, 100+I,CART,0,0,0,CF_sita*57.3,0,0
 EMODIF, I, ESYS, 100+I,
 
 ALLSEL
@@ -409,7 +411,7 @@ CMSEL,S,CFRP2
 
 *DO, I, MINELEM, MAXELEM, 1   !ループ
 
-LOCAL, 100+I,CART,0,0,0,CF_sita,0,0
+LOCAL, 100+I,CART,0,0,0,-CF_sita*57.3,0,0
 EMODIF, I, ESYS, 100+I,
 
 ALLSEL

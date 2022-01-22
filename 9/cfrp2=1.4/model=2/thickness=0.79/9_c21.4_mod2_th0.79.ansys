@@ -1,4 +1,4 @@
-finish
+﻿finish
 /clear,start
 /NOPR
 
@@ -36,11 +36,11 @@ E_z = 3E-3 !エポキシ部の厚さ
 
 CF_lap = 25E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_radius = {% thickness %}E-3 !CFRPの厚さ
+CF_radius = 0.79E-3 !CFRPの厚さ
 CF_radius = CF_radius !CFRPの横長さ(正方形)
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の初期位置
-Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置
+Y5 = P_y/2 + CF_gap/2 + CF_radius  !CFRP2の初期位置
 
 R_cf_top_h = 0.2 ! cfrp先端の比率
 R_cf_small = 0.5 ! cfrpが細い部分のラップ長さの比率
@@ -49,6 +49,7 @@ X_cf_small_fir = CF_len - (R_cf_small / (1 / CF_lap))
 ! 倒れたCFRPの角度
 alpha_CF_pla = CF_radius+1E-3 ! 倒れたCFRPとPLA間の距離．補正用．CFRPが倒れているとき，PLAとCFRPがくっ付いてはいけないため
 CF_sita = -ASIN((Y4-(P_y-E_y)/2 - alpha_CF_pla)/(CF_len)) ! CFRPが倒れた時の角度．負の角度
+CF_sita_2 = -ASIN((Y5-(P_y-E_y)/2 - alpha_CF_pla)/(CF_len)) ! CFRPが倒れた時の角度．負の角度
 
 
 DIV1=2.0E-3  !分割数1
@@ -254,8 +255,8 @@ CONE,CF_radius,CF_radius*R_cf_top_h,CF_len-X_cf_small_fir
 WPCSYS, -1
 
 ! CFRP2部分
-WPOFFS, X1, Y4+E_y/2, Z1/2
-WPROTA, -CF_sita*57.3, 0, 90+180
+WPOFFS, X1, Y5-CF_len*SIN(-CF_sita_2), Z1/2
+WPROTA, CF_sita_2*57.3, 0, 90+180
 CYLIND, CF_radius,0,-1E-3,X_cf_small_fir
 ! CFRPの先端
 WPOFFS, 0,0,X_cf_small_fir
@@ -383,7 +384,7 @@ CMSEL,S,CFRP2
 
 *DO, I, MINELEM, MAXELEM, 1   !ループ
 
-LOCAL, 100+I,CART,0,0,0,-CF_sita*57.3,0,0
+LOCAL, 100+I,CART,0,0,0,CF_sita_2*57.3,0,0
 EMODIF, I, ESYS, 100+I,
 
 ALLSEL

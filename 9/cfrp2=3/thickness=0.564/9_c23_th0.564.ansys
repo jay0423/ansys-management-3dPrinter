@@ -1,4 +1,4 @@
-finish
+﻿finish
 /clear,start
 /NOPR
 
@@ -36,20 +36,15 @@ E_z = 3E-3 !エポキシ部の厚さ
 
 CF_lap = 25E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_radius = {% thickness %}E-3 !CFRPの厚さ
-CF_radius = CF_radius !CFRPの横長さ(正方形)
+CF_radius = 0.564E-3 !CFRPの半径
 CF_gap = 1.0E-3 ! CFRP間の距離
-Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の初期位置
+Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の中心y座標
 Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置
 
 R_cf_top_h = 0.2 ! cfrp先端の比率
 R_cf_small = 0.5 ! cfrpが細い部分のラップ長さの比率
+
 X_cf_small_fir = CF_len - (R_cf_small / (1 / CF_lap))
-
-! 倒れたCFRPの角度
-alpha_CF_pla = CF_radius+1E-3 ! 倒れたCFRPとPLA間の距離．補正用．CFRPが倒れているとき，PLAとCFRPがくっ付いてはいけないため
-CF_sita = -ASIN((Y4-(P_y-E_y)/2 - alpha_CF_pla)/(CF_len)) ! CFRPが倒れた時の角度．負の角度
-
 
 DIV1=2.0E-3  !分割数1
 DIV2=0.8E-3 !分割数2
@@ -216,8 +211,7 @@ K	,	5	,	0	,	0	,	Z1
 K	,	6	,	0	,	P_y	,	Z1
 K	,	7	,	X1	,	P_y	,	Z1
 K	,	8	,	X1	,	0	,	Z1
-
-! エポキシ樹脂
+! Epoxy
 K       ,       9       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2
 K       ,      10       ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
 K       ,      11       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
@@ -227,62 +221,63 @@ K       ,      14       ,       0       , (P_y-E_y)/2+E_y  ,       (Z1-E_z)/2+E_
 K       ,      15       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2+E_z
 K       ,      16       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2+E_z
 
+
 !-ヴォリューム構築------------------------------------------------------
 
 !---試験片--------------------------------------------
 ! PLA部分
 V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
+ALLSEL
+CM,SOTO,VOLU
+
 ! エポキシ樹脂部分
 V	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,	16
-
+ALLSEL
+CMSEL,U,SOTO
+CM,UCHI,VOLU
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
-
-VSEL,S,VOLU,,3,3 ! PLA
-CM,SOTO,VOLU
 ALLSEL
+CMSEL,U,UCHI
+CM,SOTO,VOLU
 
 
 ! CFRP1部分
 CMSEL,U,SOTO
 WPOFFS, 0, Y4, Z1/2
-WPROTA, CF_sita*57.3, 0, 90
-CYLIND, CF_radius,0,-1E-3,X_cf_small_fir
+WPROTA, 0, 0, 90
+CYLIND, CF_radius,0,0,X_cf_small_fir
+WPCSYS, -1
 ! CFRPの先端
-WPOFFS, 0,0,X_cf_small_fir
+WPOFFS, X_cf_small_fir,Y4, Z1/2
+WPROTA, 0, 0, 90
 CONE,CF_radius,CF_radius*R_cf_top_h,CF_len-X_cf_small_fir
 WPCSYS, -1
 
 ! CFRP2部分
-WPOFFS, X1, Y4+E_y/2, Z1/2
-WPROTA, -CF_sita*57.3, 0, 90+180
-CYLIND, CF_radius,0,-1E-3,X_cf_small_fir
+WPOFFS, 0, Y4+CF_gap+CF_radius*2, Z1/2
+WPROTA, 0, 0, 90
+CYLIND, CF_radius,0,X1-X_cf_small_fir,X1
+WPCSYS, -1
 ! CFRPの先端
-WPOFFS, 0,0,X_cf_small_fir
+WPOFFS, X1-X_cf_small_fir,Y4+CF_gap+CF_radius*2, Z1/2
+WPROTA, 0, 0, -90
 CONE,CF_radius,CF_radius*R_cf_top_h,CF_len-X_cf_small_fir
 WPCSYS, -1
-
 
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
 ALLSEL
 VGLUE,ALL
 
-! CFRPのはみ出した部分を削除した．
 VSEL,S,VOLU,,1,1
-VSEL,A,VOLU,,4,4
-VDEL,ALL,,1
-ALLSEL
-
-VSEL,S,VOLU,,2,2
 CM,CFRP1,VOLU
-VSEL,S,VOLU,,6,6
+VSEL,S,VOLU,,2,2
 CM,CFRP1_s,VOLU
 VSEL,S,VOLU,,5,5
 CM,CFRP2,VOLU
-VSEL,S,VOLU,,14,14
+VSEL,S,VOLU,,4,4
 CM,CFRP2_s,VOLU
-
 ALLSEL
 CMSEL,U,SOTO
 CMSEL,U,CFRP1
@@ -290,6 +285,7 @@ CMSEL,U,CFRP1_s
 CMSEL,U,CFRP2
 CMSEL,U,CFRP2_s
 CM,UCHI,VOLU
+
 
 !-メッシュ分割--------------------------------------------------
 
@@ -300,33 +296,41 @@ AESIZE,ALL,DIV3
 !-試験片CFRPメッシュ--------------------------------------------
 CMSEL,S,CFRP1
 TYPE,1                             !要素1
-MAT,3                             !材料3
+MAT,3                             !材料2
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
+VSWEEP,ALL
 MOPT,DEFA
+! CM,CFRP1,ELEM
+CMSEL,S,CFRP1_s
+TYPE,1                             !要素1
+MAT,3                             !材料2
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
 VSWEEP,ALL
 MOPT,DEFA
 ! CM,CFRP1,ELEM
 
-CMSEL,S,CFRP1_s
-TYPE,1                             !要素1
-MAT,3                             !材料3
-VSWEEP,ALL
-MOPT,DEFA
-CM,CFRP1,ELEM
-
 CMSEL,S,CFRP2
 TYPE,1                             !要素1
-MAT,3                             !材料3
+MAT,3                             !材料2
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
 VSWEEP,ALL
 MOPT,DEFA
 ! CM,CFRP2,ELEM
-
 CMSEL,S,CFRP2_s
 TYPE,1                             !要素1
-MAT,3                             !材料3
+MAT,3                             !材料2
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
 VSWEEP,ALL
 MOPT,DEFA
-CMSEL,U,CFRP1
-CM,CFRP2,ELEM
+! CM,CFRP1,ELEM
 
 
 !-試験片内側メッシュ--------------------------------------------
@@ -360,36 +364,6 @@ MOPT,DEFA
 ALLSEL
 
 
-!-CF部の繊維方向定義--------------------------------------------------
-
-CMSEL,S,CFRP1
-*GET, MINELEM, ELEM, 0, NUM, MIN
-*GET, MAXELEM, ELEM, 0, NUM, MAX
-
-*DO, I, MINELEM, MAXELEM, 1   !ループ
-
-LOCAL, 100+I,CART,0,0,0,CF_sita*57.3,0,0
-EMODIF, I, ESYS, 100+I,
-
-ALLSEL
-CSYS,0
-
-*ENDDO
-
-
-CMSEL,S,CFRP2
-*GET, MINELEM, ELEM, 0, NUM, MIN
-*GET, MAXELEM, ELEM, 0, NUM, MAX
-
-*DO, I, MINELEM, MAXELEM, 1   !ループ
-
-LOCAL, 100+I,CART,0,0,0,-CF_sita*57.3,0,0
-EMODIF, I, ESYS, 100+I,
-
-ALLSEL
-CSYS,0
-*ENDDO
-
 !-境界条件指定--------------------------------------------------
 ALLSEL
 
@@ -421,7 +395,7 @@ ALLSEL !節点全選択
 FINISH  
 /POST1
 
-
+  
 FINISH  
 /SOLU
 

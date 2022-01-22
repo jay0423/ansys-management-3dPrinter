@@ -98,6 +98,7 @@ PLVECT,EPTO,,,,VECT,NODE,ON
 
 
 !破壊基準コンター図表示
+/POST1  
 /EFACET,1
 PLNSOL, S,Z,0,1.0
 PLNSOL, PDMG,STAT,0,1.0 !破壊基準コンター図表示

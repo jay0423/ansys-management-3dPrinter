@@ -53,7 +53,7 @@ CF_sita = -ASIN((Y4-(P_y-E_y)/2 - alpha_CF_pla)/(CF_len)) ! CFRPが倒れた時�
 
 DIV1=2.0E-3  !分割数1
 DIV2=0.8E-3 !分割数2
-DIV3=0.3E-3 !分割数3
+DIV3=0.2E-3 !分割数3
 
 DISTANCE = 2E-3
 TIME1 = 2

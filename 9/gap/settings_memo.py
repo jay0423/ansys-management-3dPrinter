@@ -37,14 +37,11 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    '9/cfrp2=1.4/model=1/': [
-        ('thickness', [0.339,0.451,0.564,0.677,0.790]),
+    '9/gap/': [
+        ('gap', [0.5,1.0,1.5,2.0,2.5,3.0]),
     ],
-    '9/cfrp2=1.4/model=2/': [
-        ('thickness', [0.339,0.451,0.564,0.677,0.790]),
-    ],
-    '9/cfrp2=3/': [
-        ('thickness', [0.339,0.451,0.564,0.677,0.790]),
+    '9/lap/': [
+        ('lap', [0,10,20,30,40]),
     ],
 }
 
@@ -152,7 +149,7 @@ PATH_FILE_NAME = "path.xlsx"
 FILE_EXTENSION = [
     "ansys",
     "csv",
-    "png"
+    # "png"
 ]
 
 

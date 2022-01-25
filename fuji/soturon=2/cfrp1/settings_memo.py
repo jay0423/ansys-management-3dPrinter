@@ -38,11 +38,11 @@ DIR_STRUCTURE = {
 """
 DIR_STRUCTURE = {
     'fuji/soturon=2/cfrp1/': [
-        ('thickness', [0.73]),
+        ('thickness', [0.90]),
     ],
     'fuji/soturon=2/cfrp2=1/': [
-        ('lap', [0,10,20,30]),
-        ('gap', [0.5,1.0,1.5,2.0,2.5,3.0]),
+        ('lap', [10,20,30]),
+        ('gap', [0.5,1.0,2.0,4.0,6.0,8.0]),
     ],
 }
 

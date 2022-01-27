@@ -32,7 +32,8 @@
         "cf_small_rate": "csr",
         "epo_young": "ey",
         "pla_young": "py",
-        "epo_hizumi": "eh"
+        "epo_hizumi": "eh",
+        "h_zurasu": "hzu"
     },
     "DEFAOLUT_REPLACE_WORD_DICT": {
         "cfrp2_lap": "20",

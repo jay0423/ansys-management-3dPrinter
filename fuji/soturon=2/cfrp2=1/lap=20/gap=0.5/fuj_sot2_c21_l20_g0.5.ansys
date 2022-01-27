@@ -36,7 +36,7 @@ E_z = 3E-3 !エポキシ部の厚さ
 
 CF_lap = 20E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = (X1 + CF_lap) / 2 !CFRP長さ
-CF_radius = 0.９E-3 !CFRPの半径
+CF_radius = 0.9E-3 !CFRPの半径
 CF_gap = 0.5E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の中心y座標
 Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置

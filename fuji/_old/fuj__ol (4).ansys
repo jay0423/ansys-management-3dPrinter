@@ -38,7 +38,7 @@ Z1	=	5E-3
 E_y	=	8E-3
 P_y      =       10E-3
 Z2      =       3E-3
-Y4 = 0.1E-3 ! CFRPの厚さ
+Y4 = 1E-3 ! CFRPの厚さ
 CF_y = Y4
 
 DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
@@ -53,73 +53,90 @@ TIME1 = 3
 
 !-材料物性定義----------------------------------------------
 
-!>>>>>材料2>>>>>>>
-! エポキシ樹脂
-Bee1 = 2E9!全方向弾性率
 
-Bnu12 = 0.39 !全方向ポアソン比
+!>>>>>材料3>>>>>>>
+! CFRP
+Cee1 = 54E9!1方向弾性率
+Cee2 = 6E9  !2方向弾性率
+Cee3 = 6E9  !3方向弾性率
 
-Bg12 = 26E9   !全方向せん断弾性率
+Cnu12 = 0.30 !zx,zy方向ポアソン比
+Cnu13 = 0.30 !xz,yz方向ポアソン比
+Cnu23 = 0.35 !xy,yx方向ポアソン比
 
-BsuA = -200E6 !圧縮強度
-BsuXYZ = 11.2E6 !引張強度
-SendanXYZ_2= 10E6 !せん断許容応力
+Cg23 = 9E9 !2-3方向せん断弾性率
+Cg12 = 4E9 !2-3方向せん断弾性率
 
-!MITUDO2= 2790   !質量密度
+CsuA = -100E9 !圧縮強度
+CsuX = 701E6 !引張強度(繊維平行方向)
+CsuZ = 19E6 !引張強度(繊維垂直方向)
+CsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
+SendanXYZ = 90.4E6 !せん断許容応力
 
-     
-MP,EX,2,Bee1        ! 材料2:AL
-MP,EY,2,Bee1  
-MP,EZ,2,Bee1  
-MP,PRXY,2,Bnu12
-MP,PRYZ,2,Bnu12
-MP,PRXZ,2,Bnu12
-MP,GXY,2,Bg12
-MP,GYZ,2,Bg12
-MP,GXZ,2,Bg12
+! MITUDO1=  1260  !質量密度
 
-!MP,DENS,2,MITUDO2
+
+
+MP,EX,3,Cee1        ! 材料1:CFRTP
+MP,EY,3,Cee3  
+MP,EZ,3,Cee2 
+ 
+MP,PRXY,3,Cnu12
+MP,PRYZ,3,Cnu23
+MP,PRXZ,3,Cnu13
+
+! MP,NUXY,3,Cnu12
+! MP,NUYZ,3,Cnu21
+! MP,NUXZ,3,Cnu12
+
+
+MP,GXY,3,Cg23
+MP,GYZ,3,Cg12
+MP,GXZ,3,Cg23
+
+!MP,DENS,1,MITUDO1
+
 
 !-損傷モデル定義------------------------------------------
 
 
 
-
-!>>>>>材料2>>>>>>>
-! epoxy
-TB,DMGI,2,,4,1			! 損傷発生の基準則を指定
+!>>>>>材料3>>>>>>>
+! CFRP
+TB,DMGI,3,,4,1			! 損傷発生の基準則を指定
 TBDATA,1,2,2,2,2			! 最大応力則の指定
 
-TB,FCLI,2,1,20,1			! 損傷発生の閾値を指定
-TBDATA,1,BsuXYZ,BsuA,BsuXYZ,BsuA,BsuXYZ,BsuA! 応力指定
-TBDATA,7,SendanXYZ_2,SendanXYZ_2,SendanXYZ_2
+TB,FCLI,3,1,20,1			! 損傷発生の閾値を指定
+TBDATA,1,CsuX,CsuA,CsuY,CsuA,CsuZ,CsuA! 応力指定
+TBDATA,7,SendanXYZ,SendanXYZ,SendanXYZ
 
-TB,DMGE,2,1,4,1			! 損傷発生時の剛性減少率を指定
+TB,DMGE,3,1,4,1			! 損傷発生時の剛性減少率を指定
 TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
-TB,BKIN,2,1,2,1
-TBTEMP,0
-TBDATA,,11.2e6,0,,,,
+
+
 
 !-キーポイント定義------------------------------------------
 
-K       ,       9       ,       0       ,    (P_y-E_y)/2  ,       (Z1-Z2)/2
-K       ,      10       ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-Z2)/2
-K       ,      11       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-Z2)/2
-K       ,      12       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-Z2)/2
-K       ,      13       ,       0       ,    (P_y-E_y)/2  ,       (Z1-Z2)/2+Z2
-K       ,      14       ,       0       , (P_y-E_y)/2+E_y  ,       (Z1-Z2)/2+Z2
-K       ,      15       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-Z2)/2+Z2
-K       ,      16       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-Z2)/2+Z2
+! CFRP
+K       ,      17       ,       0       ,    (P_y-Y4)/2  ,       (Z1-CF_y)/2
+K       ,      18       ,       0       ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2
+K       ,      19       ,       X1      ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2
+K       ,      20       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2
+K       ,      21       ,       0       ,    (P_y-Y4)/2  ,       (Z1-CF_y)/2+CF_y
+K       ,      22       ,       0       , (P_y-Y4)/2+Y4  ,       (Z1-CF_y)/2+CF_y
+K       ,      23       ,       X1      ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2+CF_y
+K       ,      24       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2+CF_y
+
  
 !-ヴォリューム構築------------------------------------------------------
 
 !---試験片--------------------------------------------
-! エポキシ樹脂部分
-V	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,	16
 
+! CFRP部分
+V	,	17	,	18	,	19	,	20	,	21	,	22	,	23	,	24
 ALLSEL
-CM,epoxy,VOLU
+CM,CFRP,VOLU
 
 
 ! ALLSEL
@@ -154,23 +171,26 @@ CM,epoxy,VOLU
 ! ALLSEL
 ! ! CMSEL,U,CFRP
 ! AESIZE,ALL,DIV1
-ALLSEL
+
+CMSEL,S,CFRP
 AESIZE,ALL,DIV2
 
 ALLSEL
 
-
-!-試験片内側メッシュ--------------------------------------------
-
-CMSEL,S,epoxy
+!-試験片CFRPメッシュ--------------------------------------------
+CMSEL,S,CFRP
 TYPE,1                             !要素1
-MAT,2                             !材料2
-! MSHAPE,1,3D
-! MSHKEY,0
-! VMESH,ALL
-VSWEEP,ALL
+MAT,3                             !材料2
+MSHAPE,0,3D
+MSHKEY,1
+VMESH,ALL
 MOPT,DEFA
-CM,epoxy,VOLU
+! VSWEEP,ALL
+! MOPT,DEFA
+CM,CFRP,VOLU
+
+
+
 
 
 

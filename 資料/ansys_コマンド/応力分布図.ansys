@@ -25,7 +25,7 @@ PLNSOL,S,1
 /VIEW,1,,,1 
 /ANG,1  
 /REPLOT 
-SET,,,,,,,48
+SET,,,,,,,60
 /REPLOT 
 
 
@@ -44,11 +44,13 @@ PLNSOL,S,1
 /DEVICE,VECTOR,0
 /CTYPE,0
 /CVAL,1,.1E9,.3E9,.4E9,.5E9,.6E9,.7E9,.8E9
+! /CVAL,1,.1E9,.3E9,.4E9,.5E9,.6E9,.7E9,.8E9
+! /CVAL,1,.1E9,.2E9,.4E9,.6E9,.8E9,.9E9,1E9
 
 /VIEW,1,,,1 
 /ANG,1  
 /REPLOT 
-SET,,,,,,,48
+SET,,,,,,,52
 /REPLOT 
 
 
@@ -126,8 +128,10 @@ PLNSOL, PDMG,STAT,0,1.0 !破壊基準コンター図表示
 /REP
 
 /CTYPE,0
-/CVAL,1,.4,.5,.6,.7,.8,.9,1
-SET,,,,,,,48
+/CVAL,1,.5,.6,.7,.8,.9,1,15
+! /CVAL,1,.4,.5,.6,.7,.8,.9,1
+! /CVAL,1,.4,.5,.6,.7,.8,.9,1
+SET,,,,,,,65
 /REPLOT 
 
 

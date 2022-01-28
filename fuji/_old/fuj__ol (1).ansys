@@ -32,17 +32,17 @@ KEYW,PR_CFD,0
 /GO 
 
 !-パラメータ定義--------------------------------------------
-X1	=	100E-3
+X1  = 120E-3
 ! Y1	=	25E-3
 Z1	=	5E-3
 E_y	=	8E-3
 P_y      =       10E-3
 Z2      =       3E-3
-Y4 = 2E-3 ! CFRPの厚さ
+Y4 = 0.1E-3 ! CFRPの厚さ
 CF_y = Y4
 
-DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
-DIV2=0.5E-3 !分割数2 CFRP
+DIV1=1E-3  !分割数1 エポキシ樹脂・PLA
+DIV2=1E-3 !分割数2 CFRP
 DIV3=0.4E-3
 DIV4=0.2E-3
 DIV5=0.2E-3
@@ -79,75 +79,6 @@ MP,GXZ,1,Ag12
 
 
 
-!>>>>>材料2>>>>>>>
-! エポキシ樹脂
-Bee1 = 2E9!全方向弾性率
-
-Bnu12 = 0.39 !全方向ポアソン比
-
-Bg12 = 26E9   !全方向せん断弾性率
-
-BsuA = -200E6 !圧縮強度
-BsuXYZ = 11.2E6 !引張強度
-SendanXYZ_2= 10E6 !せん断許容応力
-
-!MITUDO2= 2790   !質量密度
-
-     
-MP,EX,2,Bee1        ! 材料2:AL
-MP,EY,2,Bee1  
-MP,EZ,2,Bee1  
-MP,PRXY,2,Bnu12
-MP,PRYZ,2,Bnu12
-MP,PRXZ,2,Bnu12
-MP,GXY,2,Bg12
-MP,GYZ,2,Bg12
-MP,GXZ,2,Bg12
-
-!MP,DENS,2,MITUDO2
-
-!>>>>>材料3>>>>>>>
-! CFRP
-Cee1 = 54E9!1方向弾性率
-Cee2 = 6E9  !2方向弾性率
-Cee3 = 6E9  !3方向弾性率
-
-Cnu12 = 0.30 !zx,zy方向ポアソン比
-Cnu13 = 0.30 !xz,yz方向ポアソン比
-Cnu23 = 0.35 !xy,yx方向ポアソン比
-
-Cg23 = 9E9 !2-3方向せん断弾性率
-Cg12 = 4E9 !2-3方向せん断弾性率
-
-CsuA = -100E9 !圧縮強度
-CsuX = 701E6 !引張強度(繊維平行方向) 900-1050
-CsuZ = 19E6 !引張強度(繊維垂直方向)
-CsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
-SendanXYZ = 90.4E6 !せん断許容応力
-
-! MITUDO1=  1260  !質量密度
-
-
-
-MP,EX,3,Cee1        ! 材料1:CFRTP
-MP,EY,3,Cee3  
-MP,EZ,3,Cee2 
- 
-MP,PRXY,3,Cnu12
-MP,PRYZ,3,Cnu23
-MP,PRXZ,3,Cnu13
-
-! MP,NUXY,3,Cnu12
-! MP,NUYZ,3,Cnu21
-! MP,NUXZ,3,Cnu12
-
-
-MP,GXY,3,Cg23
-MP,GYZ,3,Cg12
-MP,GXZ,3,Cg23
-
-!MP,DENS,1,MITUDO1
-
 
 !-損傷モデル定義------------------------------------------
 
@@ -163,32 +94,9 @@ TBDATA,7,SendanXYZ_1,SendanXYZ_1,SendanXYZ_1
 TB,DMGE,1,1,4,1			! 損傷発生時の剛性減少率を指定
 TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
-
-!>>>>>材料2>>>>>>>
-! epoxy
-TB,DMGI,2,,4,1			! 損傷発生の基準則を指定
-TBDATA,1,2,2,2,2			! 最大応力則の指定
-
-TB,FCLI,2,1,20,1			! 損傷発生の閾値を指定
-TBDATA,1,BsuXYZ,BsuA,BsuXYZ,BsuA,BsuXYZ,BsuA! 応力指定
-TBDATA,7,SendanXYZ_2,SendanXYZ_2,SendanXYZ_2
-
-TB,DMGE,2,1,4,1			! 損傷発生時の剛性減少率を指定
-TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
-
-
-!>>>>>材料3>>>>>>>
-! CFRP
-TB,DMGI,3,,4,1			! 損傷発生の基準則を指定
-TBDATA,1,2,2,2,2			! 最大応力則の指定
-
-TB,FCLI,3,1,20,1			! 損傷発生の閾値を指定
-TBDATA,1,CsuX,CsuA,CsuY,CsuA,CsuZ,CsuA! 応力指定
-TBDATA,7,SendanXYZ,SendanXYZ,SendanXYZ
-
-TB,DMGE,3,1,4,1			! 損傷発生時の剛性減少率を指定
-TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
-
+TB,BKIN,1,1,2,1
+TBTEMP,0
+TBDATA,,35.1e6,0,,,,
 
 
 
@@ -201,23 +109,6 @@ K	,	5	,	0	,	0	,	Z1
 K	,	6	,	0	,	P_y	,	Z1
 K	,	7	,	X1	,	P_y	,	Z1
 K	,	8	,	X1	,	0	,	Z1
-K       ,       9       ,       0       ,    (P_y-E_y)/2  ,       (Z1-Z2)/2
-K       ,      10       ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-Z2)/2
-K       ,      11       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-Z2)/2
-K       ,      12       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-Z2)/2
-K       ,      13       ,       0       ,    (P_y-E_y)/2  ,       (Z1-Z2)/2+Z2
-K       ,      14       ,       0       , (P_y-E_y)/2+E_y  ,       (Z1-Z2)/2+Z2
-K       ,      15       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-Z2)/2+Z2
-K       ,      16       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-Z2)/2+Z2
-! CFRP
-K       ,      17       ,       0       ,    (P_y-Y4)/2  ,       (Z1-CF_y)/2
-K       ,      18       ,       0       ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2
-K       ,      19       ,       X1      ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2
-K       ,      20       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2
-K       ,      21       ,       0       ,    (P_y-Y4)/2  ,       (Z1-CF_y)/2+CF_y
-K       ,      22       ,       0       , (P_y-Y4)/2+Y4  ,       (Z1-CF_y)/2+CF_y
-K       ,      23       ,       X1      ,  (P_y-Y4)/2+Y4 ,       (Z1-CF_y)/2+CF_y
-K       ,      24       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2+CF_y
 
  
 !-ヴォリューム構築------------------------------------------------------
@@ -226,29 +117,7 @@ K       ,      24       ,       X1      ,  (P_y-Y4)/2    ,       (Z1-CF_y)/2+CF_
 ! PLA部分
 V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
 ALLSEL
-CM,SOTO,VOLU
-! エポキシ樹脂部分
-V	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,	16
-ALLSEL
-CMSEL,U,SOTO
-CM,UCHI,VOLU
-ALLSEL
-VOVLAP,ALL !重なり部分を削除
-ALLSEL
-CMSEL,U,UCHI
-CM,SOTO,VOLU
-
-! CFRP部分
-V	,	17	,	18	,	19	,	20	,	21	,	22	,	23	,	24
-CMSEL,U,SOTO
-CM,CFRP,VOLU
-ALLSEL
-VOVLAP,ALL !重なり部分を削除
-ALLSEL
-CMSEL,U,SOTO
-CMSEL,U,CFRP
-CM,UCHI,VOLU
-
+CM,PLA,VOLU
 
 ! ALLSEL
 ! CM,SPECIMEN,VOLU
@@ -282,290 +151,24 @@ CM,UCHI,VOLU
 ! ALLSEL
 ! ! CMSEL,U,CFRP
 ! AESIZE,ALL,DIV1
-
-CMSEL,S,CFRP
+ALLSEL
 AESIZE,ALL,DIV2
 
 ALLSEL
 
-!-試験片CFRPメッシュ--------------------------------------------
-CMSEL,S,CFRP
-TYPE,1                             !要素1
-MAT,3                             !材料2
-MSHAPE,0,3D
-MSHKEY,1
-VMESH,ALL
-MOPT,DEFA
-! VSWEEP,ALL
-! MOPT,DEFA
-CM,CFRP,VOLU
 
+!-試験片外側メッシュ--------------------------------------------
 
-!-試験片内側メッシュ--------------------------------------------
-CMSEL,S,UCHI
+CMSEL,S,PLA
 TYPE,1                             !要素1
-MAT,2                             !材料2
+MAT,1                           !材料2
 ! MSHAPE,1,3D
 ! MSHKEY,0
 ! VMESH,ALL
 VSWEEP,ALL
 MOPT,DEFA
-CM,UCHI,VOLU
+CM,PLA,VOLU
 
-!-試験片外側メッシュ--------------------------------------------
-ALLSEL
-AESIZE,ALL,DIV1
-
-ALLSEL
-CMSEL,U,UCHI
-CMSEL,U,CFRP
-TYPE,1                             !要素1
-MAT,1                             !材料1
-! MSHAPE,0,3D
-! MSHKEY,1
-! VMESH,ALL
-VSWEEP,ALL
-MOPT,DEFA
-CM,SOTO,VOLU
-ALLSEL
-
-
-
-! !接触要素--------------------------------------------
-! c1  = 1E6    !法線方向の接触応力と等価の最大値
-! c2  = 0.7E3   !法線方向分離のための臨界破壊エネルギー
-! c3  = 2.42E6   !接線方向の接触応力と等価の最大値
-! c4  = 0.7E3   !接線方向滑りのための臨界破壊エネルギー
-! c5 = 1E-3
-! c6 =  1   !法線方向の圧縮力が生じているときに接戦方向に剥離するか
-! kslope = 1.3E9  !接触剛性FKN
-! pinb= 2E-4 !ピンボール半径
-! pinb2= 2E-4
-
-! ET,3,TARGE170       ! 接触要素ターゲット面
-! ET,4,CONTA174       ! 接触要素コンタクト面
-
-! ET,5,TARGE170       ! 接触要素ターゲット面
-! ET,6,CONTA174       ! 接触要素コンタクト面
-
-! KEYOPT,CONT,12,5       ! 接触面の挙動()
-! KEYOPT,CONT,7,1        !要素レベルの時間増分制御/影響制約
-! !KEYOPT,CONT,4,1       !接触検出ポイントの場所
-! KEYOPT,CONT,5,3      !自動CNOFでギャップを埋める/浸透を減らす
-! KEYOPT,CONT,10,1      !接触剛性の更新
-! KEYOPT,CONT,9,1       !自動CNOFでギャップを埋める/浸透を減らす
-
-! KEYOPT,8,3,2       ! 接触面の挙動()
-! KEYOPT,10,3,2       ! 接触面の挙動()
-
-
-! R,3,,,-kslope,,,-pinb         ! リアルコンスタンス定義  
-! R,4,,,-kslope,,,-pinb2        ! リアルコンスタンス定義   
-
-! R,5,,,-kslope,,,-pinb2        ! リアルコンスタンス定義   
-! R,6,,,-kslope,,,-pinb2        ! リアルコンスタンス定義 
-
-
-! TB,CZM,3,1,1,CBDE   ! 粘着材料の定義
-! TBDATA,3,c3,c4,c5
-
-! TB,CZM,4,1,1,CBDE   ! 粘着材料の定義
-! TBDATA,1,c1,c2,c3,c4,c5,c6
-
-
-! TB,CZM,5,1,1,CBDE   ! 粘着材料の定義
-! TBDATA,1,c1,c2,c3,c4,c5,c6
-
-! TB,CZM,6,1,1,CBDE   ! 粘着材料の定義
-! TBDATA,1,c1,c2,c3,c4,c5,c6
-
-
-! !接触要素の生成---------------------------------------------
-! ALLSEL
-
-! TYPE,3
-! MAT,1
-! REAL,1
-! ESEL,S,MAT,,1
-! NSLE, S, ALL
-! NSEL,R,LOC,Z,0,L_J
-! NSEL,R,LOC,Y,H_AL
-! ESURF   ! 接触要素の生成(ターゲット面
-
-! ALLSEL
-
-! TYPE,4
-! MAT,3
-! REAL,3
-! ESEL,S,MAT,,2
-! NSLE, S, ALL
-! NSEL,R,LOC,Z,0,L_J
-! NSEL,R,LOC,Y,H_AL
-! CM, CONTA21, NODE
-! ESURF   ! 接触要素の生成(コンタクト面
-
-! ALLSEL
-! ESEL,S,MAT,,2
-! NSLE, S, ALL
-! NSEL,R,LOC,X,0
-! NSEL, R, LOC, Z, L_J/2-PIN_D/2+DIV4, L_J/2+PIN_D/2-DIV4
-! CM, CONTA1, NODE
-
-
-! ALLSEL
-! TYPE,6
-! MAT,4
-! REAL,4
-! ESEL,S,MAT,,2
-! NSLE, S, ALL
-! NSEL, R, LOC, X, 0, PIN_D/2
-! NSEL, R, LOC, Y, H_AL, H_AL+H_CF
-! NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
-! CMSEL,U,CONTA1 !コンポーネント選択解除
-! CM, CONTA11, NODE
-! ESURF   ! 接触要素の生成(コンタクト面
-
-
-! ALLSEL
-
-! TYPE,5
-! MAT,4
-! REAL,4
-! ESEL,S,MAT,,1
-! NSLE, S, ALL
-! NSEL, R, LOC, X, 0, PIN_D/2
-! NSEL, R, LOC, Y, H_AL, H_AL+H_CF
-! NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
-! CM, CONTA12, NODE
-
-! ESURF   ! 接触要素の生成(ターゲット面
-
-
-
-! ALLSEL
-
-! TYPE,4
-! MAT,7
-! REAL,7
-! ESEL,S,MAT,,1
-! NSLE, S, ALL
-! NSEL,R,LOC,Z,0,L_J
-! NSEL,R,LOC,Y,H_AL
-! ESURF   ! 接触要素の生成(ターゲット面
-
-! ALLSEL
-
-! TYPE,3
-! MAT,7
-! REAL,7
-! ESEL,S,MAT,,2
-! NSLE, S, ALL
-! NSEL,R,LOC,Z,0,L_J
-! NSEL,R,LOC,Y,H_AL
-! CM, CONTA21, NODE
-! ESURF   ! 接触要素の生成(コンタクト面
-
-! ALLSEL
-! ESEL,S,MAT,,2
-! NSLE, S, ALL
-! NSEL,R,LOC,X,0
-! NSEL, R, LOC, Z, L_J/2-PIN_D/2+DIV4, L_J/2+PIN_D/2-DIV4
-! CM, CONTA1, NODE
-
-
-! ALLSEL
-! TYPE,5
-! MAT,8
-! REAL,8
-! ESEL,S,MAT,,2
-! NSLE, S, ALL
-! NSEL, R, LOC, X, 0, PIN_D/2
-! NSEL, R, LOC, Y, H_AL, H_AL+H_CF
-! NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
-! CMSEL,U,CONTA1 !コンポーネント選択解除
-! CM, CONTA11, NODE
-! ESURF   ! 接触要素の生成(コンタクト面
-
-
-! ALLSEL
-
-! TYPE,6
-! MAT,8
-! REAL,8
-! ESEL,S,MAT,,1
-! NSLE, S, ALL
-! NSEL, R, LOC, X, 0, PIN_D/2
-! NSEL, R, LOC, Y, H_AL, H_AL+H_CF
-! NSEL, R, LOC, Z, L_J/2-PIN_D/2, L_J/2+PIN_D/2
-! CM, CONTA12, NODE
-
-! ESURF   ! 接触要素の生成(ターゲット面
-
-
-
-! ALLSEL
-! TYPE,8
-! MAT,5
-! REAL,5
-! ESEL,S,MAT,,1
-! CMSEL,S,CONTA12 !コンポーネント選択
-! NSEL, R, LOC, Y, H_AL
-! !NSEL, R, LOC, X, 0
-! !NSEL, R, LOC, Z, L_J/2-PIN_D/2
-
-! ESURF   ! 接触要素の生成(コンタクト面
-
-
-! ALLSEL
-! TYPE,7
-! MAT,5
-! REAL,5
-! ESEL,S,MAT,,2
-! CMSEL,S,CONTA21 !コンポーネント選択
-! ESURF   ! 接触要素の生成(ターゲット面
-
-! ALLSEL
-! TYPE,10
-! MAT,6
-! REAL,6
-! ESEL,S,MAT,,1
-! CMSEL,S,CONTA12 !コンポーネント選択
-! NSEL, R, LOC, Y, H_AL+H_CF
-! !NSEL, R, LOC, X, 0
-! !NSEL, R, LOC, Z, L_J/2-PIN_D/2
-! ESURF   ! 接触要素の生成(コンタクト面
-
-
-! ALLSEL
-! TYPE,9
-! MAT,6
-! REAL,6
-! ESEL,S,MAT,,2
-! CMSEL,S,CONTA11 !コンポーネント選択
-! ESURF   ! 接触要素の生成(ターゲット面
-
-
-
-! ALLSEL
-! TYPE,8
-! MAT,5
-! REAL,9
-! ESEL,S,MAT,,1
-
-! NSEL, R, LOC, Y, H_AL
-! NSEL, R, LOC, X, W_CF/2
-! NSEL, R, LOC, Z, 0,L_J
-
-! ESURF   ! 接触要素の生成(コンタクト面
-
-
-! ALLSEL
-! TYPE,7
-! MAT,5
-! REAL,9
-! ESEL,S,MAT,,2
-! CMSEL,S,CONTA21 !コンポーネント選択
-! ESURF   ! 接触要素の生成(ターゲット面
 
 
 !-境界条件指定--------------------------------------------------
@@ -617,31 +220,31 @@ OUTRES,MISC,1    !エレメントのその他のデータ（ETABLEコマンド�
 
 
 SAVE
-SOLVE   
+! SOLVE   
 
 
 
-FINISH  
+! FINISH  
 
 
-/POST26
+! /POST26
 
-RFORCE, 2, NNUM, F, X, FX
-PRVAR,2, !変数2をリストに表示
-
-
-
+! RFORCE, 2, NNUM, F, X, FX
+! PRVAR,2, !変数2をリストに表示
 
 
 
-!-XYせん断応力コンター表示-----------------------------------------------------
-/POST1  
-SET,LAST
 
 
-WPLANE, 1, 0, 0, Z1/2, 0, P_y, Z1/2, X1, 0, Z1/2
-/CPLANE, 1
-/TYPE,1,8
+
+! !-XYせん断応力コンター表示-----------------------------------------------------
+! /POST1  
+! SET,LAST
+
+
+! WPLANE, 1, 0, 0, Z1/2, 0, P_y, Z1/2, X1, 0, Z1/2
+! /CPLANE, 1
+! /TYPE,1,8
 
 
 

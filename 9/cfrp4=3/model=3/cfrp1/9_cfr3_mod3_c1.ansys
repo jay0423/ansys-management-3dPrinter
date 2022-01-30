@@ -38,7 +38,7 @@ Z1 = 5E-3
 E_y = 12E-3
 P_y = 14E-3
 E_z = 3E-3
-CF_radius = {% thickness %}E-3 ! CFRPの半径
+CF_radius = 0.527E-3 ! CFRPの半径
 
 DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
 DIV2=0.8E-3 !分割数2 CFRP

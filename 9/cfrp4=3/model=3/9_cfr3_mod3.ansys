@@ -1,7 +1,3 @@
-﻿! CFRPを１本のみ埋め込んだ試験片
-
-
-!/input,c:\ansys\test-line,txt
 finish
 /clear,start
 /NOPR
@@ -32,16 +28,20 @@ KEYW,PR_CFD,0
 /GO 
 
 !-パラメータ定義--------------------------------------------
-X1 = 80E-3
-! Y1	=	25E-3
-Z1 = 5E-3
-E_y = 12E-3
-P_y = 14E-3
-E_z = 3E-3
-CF_radius = 0.51E-3 ! CFRPの半径
+X1 = 80E-3 !試験片長さ
+Z1 = 5E-3 !PLA厚さ
+E_y = 12E-3 !エポキシ部の長さ
+P_y = 14E-3 !PLA横の長さ
+E_z = 3E-3 !エポキシ部の厚さ
+H_midle_PLA = 1E-3 ! 真ん中のPLA部分の幅
+H_zurasu = 10E-3 ! ずらず距離
 
-DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
-DIV2=0.8E-3 !分割数2 CFRP
+CF_radius = 0.527E-3 !CFRPの半径
+H_CFRP_PLA_distance_y = (E_y-H_midle_PLA)/4
+
+DIV1=2.0E-3  !分割数1
+DIV2=0.8E-3 !分割数2
+DIV3=0.5E-3 !分割数3
 
 DISTANCE = 2E-3
 TIME1 = 2
@@ -117,9 +117,9 @@ Cg23 = 0.9E9 !2-3方向せん断弾性率
 Cg12 = 4E9 !2-3方向せん断弾性率
 
 CsuA = -100E9 !圧縮強度
-CsuX = 965E6 !引張強度(繊維平行方向) 900-1050
+CsuX = 965E6 !引張強度(繊維平行方向)
 CsuZ = 19E6 !引張強度(繊維垂直方向)
-CsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
+CsuY = CsuZ !引張強度(繊維垂直レイアップ方向)
 SendanXYZ = 90.4E6 !せん断許容応力
 
 ! MITUDO1=  1260  !質量密度
@@ -194,36 +194,46 @@ TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
 
 
-
 !-キーポイント定義------------------------------------------
 ! PLA
-K	,	1	,	0	,	0	,	0
-K	,	2	,	0	,	P_y	,	0
-K	,	3	,	X1	,	P_y	,	0
-K	,	4	,	X1	,	0	,	0
-K	,	5	,	0	,	0	,	Z1
-K	,	6	,	0	,	P_y	,	Z1
-K	,	7	,	X1	,	P_y	,	Z1
-K	,	8	,	X1	,	0	,	Z1
+K	,	101	,	0	,	0	,	0
+K	,	102	,	0	,	P_y	,	0
+K	,	103	,	X1	,	P_y	,	0
+K	,	104	,	X1	,	0	,	0
+K	,	105	,	0	,	0	,	Z1
+K	,	106	,	0	,	P_y	,	Z1
+K	,	107	,	X1	,	P_y	,	Z1
+K	,	108	,	X1	,	0	,	Z1
+! PLAの真ん中の部分
+K	,	109	,	0	,	(P_y-H_midle_PLA)/2	,	(Z1-E_z)/2
+K	,	110	,	0	,	(P_y+H_midle_PLA)/2	,	(Z1-E_z)/2
+K	,	111	,	X1	,	(P_y+H_midle_PLA)/2	,	(Z1-E_z)/2
+K	,	112	,	X1	,	(P_y-H_midle_PLA)/2	,	(Z1-E_z)/2
+K	,	113	,	0	,	(P_y-H_midle_PLA)/2	,	(Z1-E_z)/2+E_z
+K	,	114	,	0	,	(P_y+H_midle_PLA)/2	,	(Z1-E_z)/2+E_z
+K	,	115	,	X1	,	(P_y+H_midle_PLA)/2	,	(Z1-E_z)/2+E_z
+K	,	116	,	X1	,	(P_y-H_midle_PLA)/2	,	(Z1-E_z)/2+E_z
 ! Epoxy
-K       ,       9       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2
-K       ,      10       ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
-K       ,      11       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
-K       ,      12       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2
-K       ,      13       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2+E_z
-K       ,      14       ,       0       , (P_y-E_y)/2+E_y  ,       (Z1-E_z)/2+E_z
-K       ,      15       ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2+E_z
-K       ,      16       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2+E_z
+K       ,      201       ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2
+K       ,      202      ,       0       ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
+K       ,      203      ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2
+K       ,      204      ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2
+K       ,      205      ,       0       ,    (P_y-E_y)/2  ,       (Z1-E_z)/2+E_z
+K       ,      206      ,       0       , (P_y-E_y)/2+E_y  ,       (Z1-E_z)/2+E_z
+K       ,      207      ,       X1      ,  (P_y-E_y)/2+E_y ,       (Z1-E_z)/2+E_z
+K       ,      208      ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2+E_z
 
 
 !-ヴォリューム構築------------------------------------------------------
+
+!---試験片--------------------------------------------
 ! PLA部分
-V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
+V	,	101	,	102	,	103	,	104	,	105	,	106	,	107	,	108
 ALLSEL
 CM,SOTO,VOLU
 
 ! エポキシ樹脂部分
-V	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,	16
+V	,	201	,	202	,	203	,	204	,	205	,	206	,	207	,	208
 ALLSEL
 CMSEL,U,SOTO
 CM,UCHI,VOLU
@@ -234,45 +244,74 @@ CMSEL,U,UCHI
 CM,SOTO,VOLU
 
 
-! CFRP部分
-CMSEL,U,SOTO
-WPOFFS, 0, P_y/2, Z1/2
+V	,	109	,	110	,	111	,	112	,	113	,	114	,	115	,	116
+ALLSEL
+VOVLAP,ALL !重なり部分を削除
+ALLSEL
+
+
+
+! CFRP
+WPOFFS, 0, (P_y-E_y)/2+H_CFRP_PLA_distance_y, Z1/2
 WPROTA, 0, 0, 90
 CYLIND, CF_radius,0,0,X1
-CM,CFRP,VOLU
+WPCSYS, -1
+
+! CFRP2
+WPOFFS, 0, (P_y+H_midle_PLA)/2+H_CFRP_PLA_distance_y, Z1/2
+WPROTA, 0, 0, 90
+CYLIND, CF_radius,0,0,X1
+WPCSYS, -1
+
 
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
 ALLSEL
-CMSEL,U,SOTO
-CMSEL,U,CFRP
-CM,UCHI,VOLU
-
-ALLSEL
 VGLUE,ALL
+
+! ボリュームの命名
+VSEL,S,VOLU,,1,1
+CM,PLA_midle,VOLU
+VSEL,S,VOLU,,6,6
+CM,SOTO,VOLU
+
+VSEL,S,VOLU,,2,2
+CM,CFRP1,VOLU
+
+VSEL,S,VOLU,,3,3
+CM,CFRP2,VOLU
+
+VSEL,S,VOLU,,8,8
+CM,Epo1,VOLU
+VSEL,S,VOLU,,7,7
+CM,Epo2,VOLU
+
 
 !-メッシュ分割--------------------------------------------------
 
-CMSEL,S,CFRP
-AESIZE,ALL,DIV2
-
 ALLSEL
+AESIZE,ALL,DIV3
+
 
 !-試験片CFRPメッシュ--------------------------------------------
-CMSEL,S,CFRP
+CMSEL,S,CFRP1
 TYPE,1                             !要素1
 MAT,3                             !材料2
-! MSHAPE,0,3D
-! MSHKEY,1
-! VMESH,ALL
-! MOPT,DEFA
 VSWEEP,ALL
 MOPT,DEFA
-CM,CFRP,ELEM
+
+CMSEL,S,CFRP2
+TYPE,1                             !要素1
+MAT,3                             !材料2
+VSWEEP,ALL
+MOPT,DEFA
 
 
 !-試験片内側メッシュ--------------------------------------------
-CMSEL,S,UCHI
+ALLSEL
+AESIZE,ALL,DIV2
+
+CMSEL,S,Epo1
 TYPE,1                             !要素1
 MAT,2                             !材料2
 ! MSHAPE,1,3D
@@ -280,25 +319,42 @@ MAT,2                             !材料2
 ! VMESH,ALL
 VSWEEP,ALL
 MOPT,DEFA
-CM,UCHI,ELEM
+! CM,UCHI,ELEM
+
+CMSEL,S,Epo2
+TYPE,1                             !要素1
+MAT,2                             !材料2
+! MSHAPE,1,3D
+! MSHKEY,0
+! VMESH,ALL
+VSWEEP,ALL
+MOPT,DEFA
+! CM,UCHI,ELEM
+
 
 !-試験片外側メッシュ--------------------------------------------
 ALLSEL
 AESIZE,ALL,DIV1
 
-ALLSEL
-CMSEL,U,UCHI
-CMSEL,U,CFRP
+CMSEL,S,PLA_midle
 TYPE,1                             !要素1
 MAT,1                             !材料1
-! MSHAPE,0,3D
-! MSHKEY,1
+! MSHAPE,1,3D
+! MSHKEY,0
 ! VMESH,ALL
 VSWEEP,ALL
 MOPT,DEFA
-CM,SOTO,ELEM
-ALLSEL
 
+CMSEL,S,SOTO
+TYPE,1                             !要素1
+MAT,1                             !材料1
+! MSHAPE,1,3D
+! MSHKEY,0
+! VMESH,ALL
+VSWEEP,ALL
+MOPT,DEFA
+! CM,SOTO,VOLU
+ALLSEL
 
 
 !-境界条件指定--------------------------------------------------
@@ -316,6 +372,8 @@ D,ALL,UY,0
 
 ASEL,S,LOC,X,X1 !荷重負荷面カップリング
 NSLA,S,1
+! D,ALL,UZ,0
+! D,ALL,UY,0
 CP,NEXT,UX,ALL
 
 *GET,NNUM,NODE,,NUM,MIN !最小の節点選択

@@ -33,7 +33,9 @@
         "epo_young": "ey",
         "pla_young": "py",
         "epo_hizumi": "eh",
-        "h_zurasu": "hzu"
+        "h_zurasu": "hzu",
+        "height": "hei",
+        "cf_length": "cfl"
     },
     "DEFAOLUT_REPLACE_WORD_DICT": {
         "cfrp2_lap": "20",

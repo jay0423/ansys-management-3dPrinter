@@ -37,8 +37,8 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    '9/multiple_cfrp/': [
-        ('n_cfrp', [2,3,4,5]),
+    '9\\multiple_cfrp\\': [
+        ('n_cfrp', [2,3,4,5,6,7]),
         ('lap', [10,15,19]),
     ],
 }
@@ -57,7 +57,7 @@ ANALYSIS_PATH = [
 ]
 """
 ANALYSIS_PATH = [
-    "9/cfrp1/"
+    "9\\multiple_cfrp\\",
 ]
 
 
@@ -146,8 +146,7 @@ PATH_FILE_NAME = "path.xlsx"
 # ファイル名をルール通りに作成する対象ファイルの拡張子
 FILE_EXTENSION = [
     "ansys",
-    "csv",
-    # "png"
+    "csv"
 ]
 
 
@@ -177,13 +176,13 @@ WRITE_EXTENSION = "ansys"
 ### auto_analysis
 # 実行ディレクトリパス
 # PY_DIR_PATH = "C:\\Users\\matlab\\Documents\\ansys\\ansys-management-3dPrinter\\" # 藤井windowsPC
-# PY_DIR_PATH = "C:\\Users\\matlab\\Documents\\ansys-management-3dPrinter\\" # 梶本windowsPC
-PY_DIR_PATH = "/Users/jay0423/Documents/GitHub/ansys-management-3dPrinter/" # 梶本macPC
+PY_DIR_PATH = "C:\\Users\\user\\Documents\\kajimoto\\ansys-management-3dPrinter\\" # 梶本windowsPC
+# PY_DIR_PATH = "/Users/jay0423/Documents/GitHub/ansys-management-3dPrinter/" # 梶本macPC
 
 
 # ansysデータの保存先のディレクトリ(windows)のパス
 # CWD_PATH = "C:\\Users\\matlab\\Documents\\ansys\\ansys_fujii\\" # 藤井windowsPC
-CWD_PATH = "C:\\Users\\matlab\\ansys_kajimoto\\" # 梶本windowsPC
+CWD_PATH = "D:\\kajimoto_Ansys\\" # 梶本windowsPC
 
 
 # TEMPのパス

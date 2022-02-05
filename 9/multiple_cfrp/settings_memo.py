@@ -37,9 +37,9 @@ DIR_STRUCTURE = {
 「変更部分の名前」は，ABBREVIATION内に含まれていなければならない．
 """
 DIR_STRUCTURE = {
-    '9/lap_effective/': [
-        ('thickness', [0.339, 0.395,0.451, 0.507,0.564]),
-        ('height', [75,70,65,60,55,50]),
+    '9/multiple_cfrp/': [
+        ('n_cfrp', [2,3,4,5]),
+        ('lap', [10,15,19]),
     ],
 }
 
@@ -57,7 +57,7 @@ ANALYSIS_PATH = [
 ]
 """
 ANALYSIS_PATH = [
-    "9/cfrp4=3/"
+    "9/cfrp1/"
 ]
 
 

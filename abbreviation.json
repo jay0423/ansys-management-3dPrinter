@@ -35,7 +35,8 @@
         "epo_hizumi": "eh",
         "h_zurasu": "hzu",
         "height": "hei",
-        "cf_length": "cfl"
+        "cf_length": "cfl",
+        "n_cfrp": "ncf"
     },
     "DEFAOLUT_REPLACE_WORD_DICT": {
         "cfrp2_lap": "20",

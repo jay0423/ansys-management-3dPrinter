@@ -32,7 +32,7 @@ KEYW,PR_CFD,0
 /GO 
 
 !-パラメータ定義--------------------------------------------
-X1 = 50E-3 !試験片長さ
+X1 = 75E-3 !試験片長さ
 Z1 = 5E-3 !PLA厚さ
 E_y = 12E-3 !エポキシ部の長さ
 P_y = 14E-3 !PLA横の長さ
@@ -40,7 +40,7 @@ E_z = 3E-3 !エポキシ部の厚さ
 
 CF_len = 40E-3 !CFRP長さ
 CF_lap = 2*CF_len-X1 ! CFRPの重ね継ぎ手長さ
-CF_radius = 0.451E-3 !CFRPの半径
+CF_radius = 0.395E-3 !CFRPの半径
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の中心y座標
 Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置
@@ -296,7 +296,7 @@ MOPT,DEFA
 
 !-試験片内側メッシュ--------------------------------------------
 ALLSEL
-AESIZE,ALL,0.7E-3
+AESIZE,ALL,DIV2
 
 CMSEL,S,UCHI
 TYPE,1                             !要素1

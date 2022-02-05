@@ -1,8 +1,4 @@
-﻿! CFRPの長さを一定にして，CFRPの長さと重ね継ぎ手長さの影響を調べる．従って，高さが異なる．
-! 重ね継ぎ手長さから造形物の高さが決定するが，X1に数式を入れると自動的に応力ひずみ線図を作るときに不都合なため，事前に計算してX1に数式を埋め込み，
-! その値から逆算して重ね継ぎ手長さを決定させる．
-
-finish
+﻿finish
 /clear,start
 /NOPR
 
@@ -32,21 +28,24 @@ KEYW,PR_CFD,0
 /GO 
 
 !-パラメータ定義--------------------------------------------
-X1 = 50E-3 !試験片長さ
+!X1 = 80E-3 !試験片長さ
 Z1 = 5E-3 !PLA厚さ
 E_y = 12E-3 !エポキシ部の長さ
 P_y = 14E-3 !PLA横の長さ
 E_z = 3E-3 !エポキシ部の厚さ
 
+N_CF = 2
+CF_lap = 19E-3 ! CFRPの重ね継ぎ手長さ
 CF_len = 40E-3 !CFRP長さ
-CF_lap = 2*CF_len-X1 ! CFRPの重ね継ぎ手長さ
-CF_radius = 0.451E-3 !CFRPの半径
+CF_radius = 0.339E-3 !CFRPの半径
 CF_gap = 1.0E-3 ! CFRP間の距離
 Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の中心y座標
 Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置
 
+X1 = 61E-3
+
 DIV1=2.0E-3  !分割数1
-DIV2=0.8E-3 !分割数2
+DIV2=1.0E-3 !分割数2
 DIV3=0.3E-3 !分割数3
 
 DISTANCE = 2E-3
@@ -241,26 +240,34 @@ CMSEL,U,UCHI
 CM,SOTO,VOLU
 
 
-! CFRP1部分
+
 CMSEL,U,SOTO
-WPOFFS, 0, Y4, Z1/2
+*DO, k, 1, N_CF, 2   !ループ
+! CFRP1部分
+WPOFFS, (k-1)*(CF_len-CF_lap), Y4, Z1/2
 WPROTA, 0, 0, 90
 CYLIND, CF_radius,0,0,CF_len
-CM,CFRP1,VOLU
+WPCSYS, -1
+*ENDDO
+
+
+*DO, k, 2, N_CF, 2   !ループ
 
 ! CFRP2部分
-CMSEL,U,CFRP1
-WPOFFS, 0, CF_gap+CF_radius*2, 0
-WPROTA, 0, 0, 0
-CYLIND, CF_radius,0,X1-CF_len,X1
-CM,CFRP2,VOLU
+WPOFFS, (k-1)*(CF_len-CF_lap), Y5, Z1/2
+WPROTA, 0, 0, 90
+CYLIND, CF_radius,0,0,CF_len
+WPCSYS, -1
+
+*ENDDO
+
+CM,CFRP,VOLU
 
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
 ALLSEL
 CMSEL,U,SOTO
-CMSEL,U,CFRP1
-CMSEL,U,CFRP2
+CMSEL,U,CFRP
 CM,UCHI,VOLU
 
 ALLSEL
@@ -273,7 +280,7 @@ AESIZE,ALL,DIV3
 
 
 !-試験片CFRPメッシュ--------------------------------------------
-CMSEL,S,CFRP1
+CMSEL,S,CFRP
 TYPE,1                             !要素1
 MAT,3                             !材料2
 ! MSHAPE,0,3D
@@ -283,20 +290,9 @@ VSWEEP,ALL
 MOPT,DEFA
 ! CM,CFRP1,ELEM
 
-CMSEL,S,CFRP2
-TYPE,1                             !要素1
-MAT,3                             !材料2
-! MSHAPE,0,3D
-! MSHKEY,1
-! VMESH,ALL
-VSWEEP,ALL
-MOPT,DEFA
-! CM,CFRP2,ELEM
-
-
 !-試験片内側メッシュ--------------------------------------------
 ALLSEL
-AESIZE,ALL,0.7E-3
+AESIZE,ALL,DIV2
 
 CMSEL,S,UCHI
 TYPE,1                             !要素1

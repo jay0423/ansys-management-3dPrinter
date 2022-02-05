@@ -1,7 +1,7 @@
-﻿! CFRPの長さを一定にして，CFRPの長さと重ね継ぎ手長さの影響を調べる．従って，高さが異なる．
-! 重ね継ぎ手長さから造形物の高さが決定するが，X1に数式を入れると自動的に応力ひずみ線図を作るときに不都合なため，事前に計算してX1に数式を埋め込み，
-! その値から逆算して重ね継ぎ手長さを決定させる．
+﻿! CFRPを１本のみ埋め込んだ試験片
 
+
+!/input,c:\ansys\test-line,txt
 finish
 /clear,start
 /NOPR
@@ -32,22 +32,16 @@ KEYW,PR_CFD,0
 /GO 
 
 !-パラメータ定義--------------------------------------------
-X1 = 50E-3 !試験片長さ
-Z1 = 5E-3 !PLA厚さ
-E_y = 12E-3 !エポキシ部の長さ
-P_y = 14E-3 !PLA横の長さ
-E_z = 3E-3 !エポキシ部の厚さ
+X1 = 80E-3
+! Y1	=	25E-3
+Z1 = 5E-3
+E_y = 12E-3
+P_y = 14E-3
+E_z = 3E-3
+CF_radius = 0.395E-3 ! CFRPの半径
 
-CF_len = 40E-3 !CFRP長さ
-CF_lap = 2*CF_len-X1 ! CFRPの重ね継ぎ手長さ
-CF_radius = 0.451E-3 !CFRPの半径
-CF_gap = 1.0E-3 ! CFRP間の距離
-Y4 = P_y/2 - CF_gap/2 - CF_radius !CFRP1の中心y座標
-Y5 = P_y/2 + CF_gap/2 !CFRP2の初期位置
-
-DIV1=2.0E-3  !分割数1
-DIV2=0.8E-3 !分割数2
-DIV3=0.3E-3 !分割数3
+DIV1=2.0E-3  !分割数1 エポキシ樹脂・PLA
+DIV2=0.8E-3 !分割数2 CFRP
 
 DISTANCE = 2E-3
 TIME1 = 2
@@ -123,9 +117,9 @@ Cg23 = 0.9E9 !2-3方向せん断弾性率
 Cg12 = 4E9 !2-3方向せん断弾性率
 
 CsuA = -100E9 !圧縮強度
-CsuX = 965E6 !引張強度(繊維平行方向)
+CsuX = 965E6 !引張強度(繊維平行方向) 900-1050
 CsuZ = 19E6 !引張強度(繊維垂直方向)
-CsuY = CsuZ !引張強度(繊維垂直レイアップ方向)
+CsuY = 19E6 !引張強度(繊維垂直レイアップ方向)
 SendanXYZ = 90.4E6 !せん断許容応力
 
 ! MITUDO1=  1260  !質量密度
@@ -200,6 +194,7 @@ TBDATA,1,1,1,1,1	! 損傷発生時の剛性減少率を指定
 
 
 
+
 !-キーポイント定義------------------------------------------
 ! PLA
 K	,	1	,	0	,	0	,	0
@@ -222,8 +217,6 @@ K       ,      16       ,       X1      ,  (P_y-E_y)/2    ,       (Z1-E_z)/2+E_z
 
 
 !-ヴォリューム構築------------------------------------------------------
-
-!---試験片--------------------------------------------
 ! PLA部分
 V	,	1	,	2	,	3	,	4	,	5	,	6	,	7	,	8
 ALLSEL
@@ -241,26 +234,18 @@ CMSEL,U,UCHI
 CM,SOTO,VOLU
 
 
-! CFRP1部分
+! CFRP部分
 CMSEL,U,SOTO
-WPOFFS, 0, Y4, Z1/2
+WPOFFS, 0, P_y/2, Z1/2
 WPROTA, 0, 0, 90
-CYLIND, CF_radius,0,0,CF_len
-CM,CFRP1,VOLU
-
-! CFRP2部分
-CMSEL,U,CFRP1
-WPOFFS, 0, CF_gap+CF_radius*2, 0
-WPROTA, 0, 0, 0
-CYLIND, CF_radius,0,X1-CF_len,X1
-CM,CFRP2,VOLU
+CYLIND, CF_radius,0,0,X1
+CM,CFRP,VOLU
 
 ALLSEL
 VOVLAP,ALL !重なり部分を削除
 ALLSEL
 CMSEL,U,SOTO
-CMSEL,U,CFRP1
-CMSEL,U,CFRP2
+CMSEL,U,CFRP
 CM,UCHI,VOLU
 
 ALLSEL
@@ -268,61 +253,52 @@ VGLUE,ALL
 
 !-メッシュ分割--------------------------------------------------
 
-ALLSEL
-AESIZE,ALL,DIV3
+CMSEL,S,CFRP
+AESIZE,ALL,DIV2
 
+ALLSEL
 
 !-試験片CFRPメッシュ--------------------------------------------
-CMSEL,S,CFRP1
+CMSEL,S,CFRP
 TYPE,1                             !要素1
 MAT,3                             !材料2
 ! MSHAPE,0,3D
 ! MSHKEY,1
 ! VMESH,ALL
+! MOPT,DEFA
 VSWEEP,ALL
 MOPT,DEFA
-! CM,CFRP1,ELEM
-
-CMSEL,S,CFRP2
-TYPE,1                             !要素1
-MAT,3                             !材料2
-! MSHAPE,0,3D
-! MSHKEY,1
-! VMESH,ALL
-VSWEEP,ALL
-MOPT,DEFA
-! CM,CFRP2,ELEM
+CM,CFRP,ELEM
 
 
 !-試験片内側メッシュ--------------------------------------------
-ALLSEL
-AESIZE,ALL,0.7E-3
-
 CMSEL,S,UCHI
 TYPE,1                             !要素1
 MAT,2                             !材料2
-MSHAPE,1,3D
-MSHKEY,0
-VMESH,ALL
-! VSWEEP,ALL
+! MSHAPE,1,3D
+! MSHKEY,0
+! VMESH,ALL
+VSWEEP,ALL
 MOPT,DEFA
-! CM,UCHI,ELEM
-
+CM,UCHI,ELEM
 
 !-試験片外側メッシュ--------------------------------------------
 ALLSEL
 AESIZE,ALL,DIV1
 
-CMSEL,S,SOTO
+ALLSEL
+CMSEL,U,UCHI
+CMSEL,U,CFRP
 TYPE,1                             !要素1
 MAT,1                             !材料1
-MSHAPE,1,3D
-MSHKEY,0
-VMESH,ALL
-! VSWEEP,ALL
+! MSHAPE,0,3D
+! MSHKEY,1
+! VMESH,ALL
+VSWEEP,ALL
 MOPT,DEFA
-! CM,SOTO,VOLU
+CM,SOTO,ELEM
 ALLSEL
+
 
 
 !-境界条件指定--------------------------------------------------
@@ -340,8 +316,6 @@ D,ALL,UY,0
 
 ASEL,S,LOC,X,X1 !荷重負荷面カップリング
 NSLA,S,1
-! D,ALL,UZ,0
-! D,ALL,UY,0
 CP,NEXT,UX,ALL
 
 *GET,NNUM,NODE,,NUM,MIN !最小の節点選択

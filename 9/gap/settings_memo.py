@@ -38,7 +38,10 @@ DIR_STRUCTURE = {
 """
 DIR_STRUCTURE = {
     '9/gap/': [
-        ('gap', [4.0,6.0,8.0]),
+        ('gap', [0.5,1.0,1.5,2.0,2.5,4.0,6.0,8.0]),
+    ],
+    '9/lap/': [
+        ('lap', [0,10,20,25,30,40,50,60,70,80]),
     ],
 }
 
@@ -56,7 +59,7 @@ ANALYSIS_PATH = [
 ]
 """
 ANALYSIS_PATH = [
-    "9/"
+    "9/multiple_cfrp/thickness=0.451/"
 ]
 
 

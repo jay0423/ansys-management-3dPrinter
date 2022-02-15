@@ -59,7 +59,7 @@ ANALYSIS_PATH = [
 ]
 """
 ANALYSIS_PATH = [
-    "9/multiple_cfrp/thickness=0.451/"
+    "10/lap/"
 ]
 
 

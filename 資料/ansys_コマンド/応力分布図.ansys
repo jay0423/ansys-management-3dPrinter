@@ -15,6 +15,14 @@ WPLANE, 1, X1/2, P_y/2, Z1/2, X1/2, 0, Z1/2, X1/2, P_y, 0
 /TYPE,1,7
 
 
+/POST1  
+SET,LAST
+
+WPLANE, 1, CF_len, P_y/2, Z1/2, CF_len, 0, Z1/2, CF_len, P_y, 0
+/CPLANE, 1
+/TYPE,1,7
+
+
 ! 主応力分布図
 /POST1  
 /SHOW,WIN32C
